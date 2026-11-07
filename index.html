@@ -1,4 +1,4 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no"><meta name="theme-color" content="#090e1b"><meta name="apple-mobile-web-app-capable" content="yes"><title>RIVAL RUN 8.4 · Midnight Streets</title><style>
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no"><meta name="theme-color" content="#090e1b"><meta name="apple-mobile-web-app-capable" content="yes"><title>RIVAL RUN 8.5</title><style>
 *{box-sizing:border-box}html,body{height:100%;margin:0;overscroll-behavior:none;background:#101115;color:white;font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}button{font:inherit;color:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent}#app{height:100dvh;max-width:1000px;margin:auto;display:flex;flex-direction:column;padding:calc(env(safe-area-inset-top) + 8px) max(9px,env(safe-area-inset-right)) calc(env(safe-area-inset-bottom) + 8px) max(9px,env(safe-area-inset-left));gap:7px}.top{display:flex;align-items:center;justify-content:space-between;min-height:40px;gap:8px;padding-bottom:3px}.brand{font-size:23px;font-weight:1000;font-style:italic;letter-spacing:-1px}.brand em{color:#ffb126;font-style:normal}.build-version{display:block;font-size:10px;font-style:normal;font-weight:850;letter-spacing:.65px;color:#70d6ff;margin-top:1px}.stage{border:1px solid #475770;background:#182237;padding:8px 10px;min-height:36px;border-radius:6px;font-weight:900;font-size:11px;letter-spacing:.035em;text-align:right}.arena{position:relative;flex:1;min-height:160px;max-height:660px;overflow:hidden;border-radius:15px;background:#172038}canvas{display:block;width:100%;height:100%}.message.bad{color:#ff576e}.message.good{color:#b8ffdb}.overlay{position:absolute;inset:0;display:grid;place-items:center;background:#090e1bbd;backdrop-filter:blur(3px);padding:14px;text-align:center}.overlay.hide{display:none}.modal{width:min(94%,380px);background:#101a2dea;border:1px solid #4b5f7c;border-radius:20px;padding:20px 18px;box-shadow:0 15px 45px #0008}.modal h1{margin:0;font-weight:1000;font-style:italic;font-size:clamp(27px,7vw,42px)}.modal p{line-height:1.5;color:#c5d2e5;font-size:13px;margin:12px 0}.go{background:#ffb339;color:#181006;border:0;border-radius:7px;padding:13px 16px;font-weight:1000;width:100%;font-size:15px;letter-spacing:.055em}.menu{display:none;position:absolute;right:max(9px,env(safe-area-inset-right));top:calc(env(safe-area-inset-top) + 49px);width:min(340px,92%);max-height:60vh;overflow:auto;z-index:7;background:#151e32;border:1px solid #475a78;border-radius:14px;padding:8px;box-shadow:0 20px 40px #0009}.menu.show{display:block}.menu button{display:block;background:#24334b;width:100%;border:0;border-radius:8px;text-align:left;padding:11px;margin:4px 0;font-size:12px;font-weight:800}.menu button:disabled{opacity:.35}
 .top{gap:8px}.brand{white-space:nowrap;font-size:clamp(18px,5.7vw,25px)}
 .build-version{color:#a6acbb;font-size:8px}.stage{margin-left:auto;background:transparent;border:0;color:#b7bdcb;text-align:center;padding:3px;font-size:clamp(10px,3.1vw,14px)}
@@ -49,7 +49,7 @@ button:focus-visible{outline:2px solid white;outline-offset:-4px}
 </style></head><body>
 <div id="app">
   <div class="top">
-    <div class="brand">RIVAL <em>RUN</em><small class="build-version" id="buildVersion" aria-label="Game build and horsepower">v8.4 · 292 HP</small></div>
+    <div class="brand">RIVAL <em>RUN</em><small class="build-version" id="buildVersion" aria-label="Game build and horsepower">v8.5 · 292 HP</small></div>
     <button id="stage" class="stage">Stage 1/6 ▾</button>
     <button id="sound" class="sound" aria-label="Race sound" aria-pressed="true">🔊</button>
   </div>
@@ -78,12 +78,12 @@ button:focus-visible{outline:2px solid white;outline-offset:-4px}
   <div class="menu" id="menu"></div>
 </div><script>
 const STAGES=[
- ['WAREHOUSE DISTRICT','Honda Civic Type R'],
- ['NORTH PASS','Subaru WRX STI'],
- ['DESERT HIGHWAY','Ford Mustang GT'],
- ['NIGHT MARKET','Dodge Challenger SRT Hellcat'],
- ['HARBOR EXPRESSWAY','Ferrari F8 Tributo'],
- ['MIDNIGHT DOCKS','Lamborghini Huracán EVO']
+ ['INDUSTRIAL PARK','Honda Civic Type R'],
+ ['PACIFIC COAST HIGHWAY','Subaru WRX STI'],
+ ['ISLAND CAUSEWAY','Ford Mustang GT'],
+ ['OCEAN DRIVE','Dodge Challenger SRT Hellcat'],
+ ['PORT ROAD','Ferrari F8 Tributo'],
+ ['ORLANDO DRAGWAY','Lamborghini Huracán EVO']
 ];
 const BUILDS=[
  {power:292,name:'Stock Mk7 Golf R'},
@@ -141,7 +141,7 @@ function updateRivalGap(w,h){
     gap.textContent=delta>0?`Rival ${Math.round(delta)} m ▶`:`◀ Rival ${Math.round(-delta)} m`;
   }
 }
-function load(n,retry=false){stage=n;phase='menu';speed=cpuSpeed=cpuThrottle=pos=cpuPos=time=sceneScroll=wheelSpin=cpuWheelSpin=0;streak=mistakes=0;player.v=player.last=player.cleanTaps=player.peakV=0;rivalSurgePhase=Math.random()*2*Math.PI;particles=[];pulseUntil=0;coast=null;cameraLead=greenUntil=driveGear=shiftUntil=0;$('tree').hidden=true;updatePads();$('buildVersion').textContent=`v8.4 · ${powerLabel(BUILDS[n])}`;$('stage').textContent=`Stage ${n+1}/${STAGES.length} · ${STAGES[n][0]} ▾`;$('menu').classList.remove('show');$('message').textContent='';update();if(retry){countdown();return;}showModal(`STAGE ${n+1}`,`Mk7 Golf R · <b>${powerLabel(BUILDS[n])}</b><br>vs. ${STAGES[n][1]}<p>Alternate A and D to race ${FINISH} meters.<br>Repeat a key or pause, and you slow down.</p>`,'START RACE',countdown)}
+function load(n,retry=false){stage=n;phase='menu';speed=cpuSpeed=cpuThrottle=pos=cpuPos=time=sceneScroll=wheelSpin=cpuWheelSpin=0;streak=mistakes=0;player.v=player.last=player.cleanTaps=player.peakV=0;rivalSurgePhase=Math.random()*2*Math.PI;particles=[];pulseUntil=0;coast=null;cameraLead=greenUntil=driveGear=shiftUntil=0;$('tree').hidden=true;updatePads();$('buildVersion').textContent=`v8.5 · ${powerLabel(BUILDS[n])}`;$('stage').textContent=`Stage ${n+1}/${STAGES.length} · ${STAGES[n][0]} ▾`;$('menu').classList.remove('show');$('message').textContent='';update();if(retry){countdown();return;}showModal(`STAGE ${n+1}`,`Mk7 Golf R · <b>${powerLabel(BUILDS[n])}</b><br>vs. ${STAGES[n][1]}<p>Alternate A and D to race ${FINISH} meters.<br>Repeat a key or pause, and you slow down.</p>`,'START RACE',countdown)}
 function countdown(){
   phase='countdown';
   countAt=performance.now();
@@ -339,16 +339,153 @@ function finish(won,elapsed,margin){
   }
 }
 function resize(){let b=c.getBoundingClientRect(),dpr=Math.min(2,window.devicePixelRatio||1);let w=Math.max(400,Math.round(b.width*dpr)),h=Math.max(280,Math.round(b.height*dpr));if(c.width!==w||c.height!==h){c.width=w;c.height=h}}window.addEventListener('resize',resize);
-const STREET_SCENES = [
-  {sky:'#101a32', haze:'#72506a', far:'#292942', near:'#1e2333', light:'#ffc282', sign:'AUTO SERVICE', type:'garage'},
-  {sky:'#111c36', haze:'#505d81', far:'#333851', near:'#191f30', light:'#d9edff', sign:'NORTH PASS', type:'ridge'},
-  {sky:'#27152a', haze:'#a85648', far:'#683948', near:'#342431', light:'#ffac61', sign:'FUEL • 24H', type:'desert'},
-  {sky:'#100e2f', haze:'#513b79', far:'#30264d', near:'#211e39', light:'#f783dc', sign:'NIGHT MARKET', type:'city'},
-  {sky:'#091b30', haze:'#316579', far:'#214154', near:'#182d3a', light:'#79e7e6', sign:'PORT GATE', type:'port'},
-  {sky:'#151029', haze:'#63334d', far:'#38233e', near:'#271c34', light:'#ff666b', sign:'DOCK 06', type:'yard'}
+const SCENES=[
+  {type:'garage', sky:'#101a32', haze:'#72506a', far:'#292942', near:'#1e2333', light:'#ffc282', sign:'AUTO SERVICE'},
+  {type:'california', sky:'#31557f', haze:'#ffac79', water:'#426d83', light:'#ffd6a4'},
+  {type:'island', sky:'#277ba8', haze:'#a6eddf', water:'#20a8ad', light:'#d5f6d6'},
+  {type:'miami', sky:'#18204f', haze:'#b85b89', light:'#ff91dc'},
+  {type:'port', sky:'#091b30', haze:'#316579', far:'#214154', near:'#182d3a', light:'#79e7e6', sign:'PORT GATE'},
+  {type:'dragstrip', sky:'#192744', haze:'#637998', light:'#eef6ff'}
 ];
+
+function sceneryTiles(w,step,rate,repeat,drawTile){
+  const shift=sceneScroll*rate%(step*repeat);
+  for(let i=Math.floor(shift/step)-1;i*step-shift<w;i++){
+    drawTile(i*step-shift,i);
+  }
+}
+
+function palm(x,y,size,color){
+  bezierFill([[x-size*.025,y],[x+size*.045,y-size*.72],[x+size*.078,y-size*.73],[x+size*.025,y]],color);
+  ctx.fillStyle=color;
+  for(let i=0;i<7;i++){
+    const angle=(i-3)*.38;
+    ctx.beginPath();
+    ctx.ellipse(x+size*.064+Math.sin(angle)*size*.28,y-size*(.71+Math.cos(angle)*.13),
+      size*.28,size*.055,angle-Math.PI/2,0,Math.PI*2);
+    ctx.fill();
+  }
+}
+
+function coastalScenery(w,y,u,scene){
+  const island=scene.type==='island';
+  const shoreline=y-u*.18;
+  if(!island){
+    ctx.fillStyle='#ffdfab';
+    ctx.beginPath();
+    ctx.arc(w*.77,y-u*.32,u*.071,0,Math.PI*2);
+    ctx.fill();
+  }
+  ctx.fillStyle=scene.water;
+  ctx.fillRect(0,shoreline,w,y-shoreline);
+  sceneryTiles(w,u*1.45,.08,4,(x,i)=>{
+    if(island){
+      const top=shoreline-u*(.075+(i%2)*.045);
+      bezierFill([[x,shoreline+u*.02],[x+u*.19,top+u*.031],[x+u*.40,top],
+        [x+u*.61,top+u*.015],[x+u*.97,shoreline+u*.02]],'#347866');
+    }
+    ctx.fillStyle=scene.light+'92';
+    for(let row=0;row<4;row++){
+      ctx.fillRect(x+u*(.15+row*.16),shoreline+u*(.034+row*.027),u*(.18+row*.026),u*.004);
+    }
+  });
+
+  if(island){
+    ctx.fillStyle='#b9d8c9';
+    ctx.fillRect(0,y-u*.052,w,u*.052);
+    ctx.fillStyle='#e1eadb';
+    ctx.fillRect(0,y-u*.052,w,u*.009);
+    sceneryTiles(w,u*.72,.57,2,(x,i)=>{
+      ctx.fillStyle='#8eaeb0';
+      ctx.fillRect(x,y-u*.043,u*.009,u*.043);
+      if(i%2===0)palm(x+u*.28,y-u*.038,u*.25,'#23584b');
+    });
+  }else{
+    sceneryTiles(w,u*1.08,.27,2,(x,i)=>{
+      const peak=y-u*(i%2===0?.27:.18);
+      bezierFill([[x,y],[x+u*.16,peak+u*.05],[x+u*.37,peak],[x+u*.52,peak+u*.022],
+        [x+u*.68,y-u*.053],[x+u*.83,y]],'#805558');
+      bezierFill([[x+u*.27,y],[x+u*.46,peak+u*.029],[x+u*.61,y-u*.069],
+        [x+u*.83,y]],'#ad7160');
+    });
+    ctx.fillStyle='#665358';
+    ctx.fillRect(0,y-u*.035,w,u*.035);
+    ctx.fillStyle='#d9b9a0';
+    ctx.fillRect(0,y-u*.034,w,u*.008);
+    sceneryTiles(w,u*.24,.57,1,x=>{
+      ctx.fillStyle='#58434b';
+      ctx.fillRect(x,y-u*.027,u*.011,u*.027);
+    });
+  }
+}
+
+function oceanDrive(w,y,u){
+  const facades=['#e4a9bf','#90d1d0','#d0b1dd'];
+  const neon=['#ff78c8','#79f6f0','#ffc088'];
+  sceneryTiles(w,u*.58,.24,3,(x,i)=>{
+    const n=(i+3)%3, top=y-u*(.27+n*.04), width=u*.53;
+    ctx.fillStyle=facades[n];
+    ctx.fillRect(x,top,width,y-top);
+    ctx.fillRect(x+u*.19,top-u*.026,u*.15,u*.028);
+    ctx.fillStyle='#332f54';
+    for(let row=0;row<3;row++){
+      const windowY=top+u*(.037+row*.051);
+      for(let col=0;col<4;col++)ctx.fillRect(x+u*(.045+col*.113),windowY,u*.065,u*.029);
+    }
+    ctx.fillRect(x+u*.11,y-u*.107,u*.31,u*.077);
+    ctx.fillStyle=neon[n];
+    ctx.fillRect(x,top+u*.006,width,u*.008);
+    ctx.fillRect(x,y-u*.119,width,u*.009);
+    ctx.font=`800 ${u*.023}px system-ui`;
+    ctx.textAlign='center';
+    ctx.textBaseline='middle';
+    ctx.fillText(['HOTEL','OCEAN','CAFÉ'][n],x+width*.5,y-u*.088);
+  });
+  ctx.fillStyle='#736078';
+  ctx.fillRect(0,y-u*.021,w,u*.021);
+  sceneryTiles(w,u*.68,.52,2,(x,i)=>{
+    palm(x+u*.11,y-u*.017,u*(i%2===0?.37:.29),'#1a3041');
+  });
+}
+
+function dragStrip(w,y,u){
+  const shirts=['#e4e8ee','#c46669','#557eac','#d3a86a','#4b9a97','#424d66'];
+  sceneryTiles(w,u*1.26,.32,2,(x,i)=>{
+    const top=y-u*.27;
+    ctx.fillStyle='#27344b';
+    ctx.fillRect(x,top,u*1.16,u*.235);
+    ctx.fillStyle='#bbc6ce';
+    ctx.fillRect(x-u*.025,top-u*.011,u*1.21,u*.014);
+    for(let row=0;row<4;row++){
+      const seat=top+u*(.057+row*.044);
+      ctx.fillStyle='#778394';
+      ctx.fillRect(x,seat+u*.006,u*1.16,u*.009);
+      for(let col=0;col<28;col++){
+        if((col*7+row*3+i)%11===0)continue;
+        const left=x+u*(.027+col*.040+(row%2)*.01);
+        ctx.fillStyle=shirts[(col+row*3+i+shirts.length)%shirts.length];
+        ctx.fillRect(left,seat-u*.011,u*.023,u*.019);
+        ctx.fillStyle=(col+row)%3===0?'#976b56':'#d5a084';
+        ctx.fillRect(left+u*.006,seat-u*.024,u*.012,u*.013);
+      }
+    }
+    ctx.fillStyle='#243148';
+    ctx.fillRect(x+u*1.19,y-u*.38,u*.008,u*.34);
+    ctx.fillStyle='#f4f7ff';
+    ctx.fillRect(x+u*1.16,y-u*.385,u*.070,u*.017);
+  });
+  ctx.fillStyle='#aeb7c3';
+  ctx.fillRect(0,y-u*.046,w,u*.046);
+  ctx.fillStyle='#687788';
+  ctx.fillRect(0,y-u*.012,w,u*.012);
+  sceneryTiles(w,u*.24,.67,1,x=>{
+    ctx.fillStyle='#8b98a7';
+    ctx.fillRect(x,y-u*.039,u*.006,u*.027);
+  });
+}
 function sky(w,h){
-  const {sky,haze,far,near,light,sign,type}=STREET_SCENES[stage];
+  const scene=SCENES[stage];
+  const {sky,haze,far,near,light,sign,type}=scene;
   const horizon=h*ROAD_TOP, unit=Math.min(w,h);
   const gradient=ctx.createLinearGradient(0,0,0,horizon);
   gradient.addColorStop(0,sky);
@@ -356,46 +493,38 @@ function sky(w,h){
   ctx.fillStyle=gradient;
   ctx.fillRect(0,0,w,h);
 
-  // Repeat scenery in world space so both layers slide past without a seam.
-  const ridge=type==='ridge'||type==='desert';
-  const farStep=unit*(ridge?.83:.22);
-  const farShift=(sceneScroll*.13)%(farStep*6);
-  for(let i=Math.floor(farShift/farStep)-1;i*farStep-farShift<w;i++){
-    const x=i*farStep-farShift;
+  if(type==='california'||type==='island')return coastalScenery(w,horizon,unit,scene);
+  if(type==='miami')return oceanDrive(w,horizon,unit);
+  if(type==='dragstrip')return dragStrip(w,horizon,unit);
+
+  const farStep=unit*.22;
+  sceneryTiles(w,farStep,.13,6,(x,i)=>{
     const height=h*(.12+((i+6)%6)*.031);
     const y=horizon-height;
-    if(ridge){
-      bezierFill([[x,horizon],[x+farStep*.30,y],[x+farStep*.53,y+h*.025],[x+farStep,horizon]],far);
-    }else{
-      ctx.fillStyle=far;
-      ctx.fillRect(x,y,farStep*.84,height);
-      ctx.fillStyle=light+'65';
-      for(let row=y+unit*.024;row<horizon-unit*.06;row+=unit*.046){
-        for(let col=1;col<=3;col++){
-          if((col+i)%4)ctx.fillRect(x+farStep*col*.19,row,unit*.014,unit*.007);
-        }
+    ctx.fillStyle=far;
+    ctx.fillRect(x,y,farStep*.84,height);
+    ctx.fillStyle=light+'65';
+    for(let row=y+unit*.024;row<horizon-unit*.06;row+=unit*.046){
+      for(let col=1;col<=3;col++){
+        if((col+i)%4)ctx.fillRect(x+farStep*col*.19,row,unit*.014,unit*.007);
       }
     }
-  }
+  });
 
   const step=unit*.95, shift=(sceneScroll*.48)%(step*2);
   for(let i=Math.floor(shift/step)-1;i*step-shift<w;i++){
     const x=i*step-shift;
-    const base=horizon-unit*.023, top=base-unit*(type==='city'?.25:.15);
+    const base=horizon-unit*.023, top=base-unit*.15;
     ctx.fillStyle=near;
-    if(type==='ridge'){
-      bezierFill([[x,base],[x+step*.13,top+unit*.02],[x+step*.36,top],[x+step*.62,base]],near);
-    }else{
-      ctx.fillRect(x,top,step*.58,base-top);
-      ctx.fillRect(x-unit*.012,top,step*.61,unit*.011);
-      for(let door=0;door<3;door++){
-        ctx.fillStyle=type==='port'&&door===1?'#57444d':'#101725';
-        ctx.fillRect(x+step*(.037+door*.175),top+unit*.064,step*.139,base-top-unit*.064);
-        ctx.fillStyle=light+'70';
-        ctx.fillRect(x+step*(.055+door*.175),top+unit*.070,step*.102,unit*.006);
-      }
+    ctx.fillRect(x,top,step*.58,base-top);
+    ctx.fillRect(x-unit*.012,top,step*.61,unit*.011);
+    for(let door=0;door<3;door++){
+      ctx.fillStyle=type==='port'&&door===1?'#57444d':'#101725';
+      ctx.fillRect(x+step*(.037+door*.175),top+unit*.064,step*.139,base-top-unit*.064);
+      ctx.fillStyle=light+'70';
+      ctx.fillRect(x+step*(.055+door*.175),top+unit*.070,step*.102,unit*.006);
     }
-    if(type==='port'||type==='yard'){
+    if(type==='port'){
       const crane=x+step*.66, craneTop=base-unit*.34;
       ctx.fillStyle=near;
       ctx.fillRect(crane,craneTop,unit*.018,base-craneTop);
@@ -403,12 +532,9 @@ function sky(w,h){
       ctx.fillRect(crane-unit*.17,craneTop,unit*.004,unit*.10);
       ctx.fillStyle=light+'95';
       ctx.fillRect(crane-unit*.20,craneTop,unit*.013,unit*.009);
-    }else if(type==='desert'||type==='city'){
-      ctx.fillStyle=light+'90';
-      ctx.fillRect(x-unit*.012,top+unit*.051,step*.61,unit*.006);
     }
     if(i%2===0){
-      const labelY=type==='ridge'?top-unit*.013:top+unit*.025;
+      const labelY=top+unit*.025;
       ctx.fillStyle='#121727';
       ctx.fillRect(x+step*.11,labelY-unit*.018,step*.37,unit*.042);
       ctx.fillStyle=light;
@@ -447,12 +573,18 @@ function ground(w,h){
   asphalt.addColorStop(1,'#262b36');
   ctx.fillStyle=asphalt;
   ctx.fillRect(0,roadTop,w,roadBottom-roadTop);
+  const drag=SCENES[stage].type==='dragstrip';
+  if(drag){
+    ctx.fillStyle='#1d222c';
+    ctx.fillRect(0,h*.698,w,h*.039);
+    ctx.fillRect(0,h*.902,w,h*.045);
+  }
   ctx.fillStyle='#f2f4f7';
   ctx.fillRect(0,roadTop,w,paint);
   ctx.fillRect(0,roadBottom-paint,w,paint);
   const dash=w*.14, period=w*.27, curb=w*.07;
   for(let x=-(sceneScroll%period);x<w;x+=period){
-    ctx.fillStyle='#ffda4d';
+    ctx.fillStyle=drag?'#f2f4f7':'#ffda4d';
     ctx.fillRect(x,split-paint/2,dash,paint);
   }
   for(let i=-1, shift=sceneScroll%(2*curb);i*curb-shift<w;i++){
