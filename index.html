@@ -1,4 +1,4 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no"><meta name="theme-color" content="#090e1b"><meta name="apple-mobile-web-app-capable" content="yes"><title>RIVAL RUN 8.0.1 · Sleeper Golf R</title><style>
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no"><meta name="theme-color" content="#090e1b"><meta name="apple-mobile-web-app-capable" content="yes"><title>RIVAL RUN 8.1 · Street Launch</title><style>
 *{box-sizing:border-box}html,body{height:100%;margin:0;overscroll-behavior:none;background:#101115;color:white;font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}button{font:inherit;color:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent}#app{height:100dvh;max-width:1000px;margin:auto;display:flex;flex-direction:column;padding:calc(env(safe-area-inset-top) + 8px) max(9px,env(safe-area-inset-right)) calc(env(safe-area-inset-bottom) + 8px) max(9px,env(safe-area-inset-left));gap:7px}.top{display:flex;align-items:center;justify-content:space-between;min-height:40px;gap:8px;padding-bottom:3px}.brand{font-size:23px;font-weight:1000;font-style:italic;letter-spacing:-1px}.brand em{color:#ffb126;font-style:normal}.build-version{display:block;font-size:10px;font-style:normal;font-weight:850;letter-spacing:.65px;color:#70d6ff;margin-top:1px}.stage{border:1px solid #475770;background:#182237;padding:8px 10px;min-height:36px;border-radius:6px;font-weight:900;font-size:11px;letter-spacing:.035em;text-align:right}.arena{position:relative;flex:1;min-height:160px;max-height:660px;overflow:hidden;border-radius:15px;background:#172038}canvas{display:block;width:100%;height:100%}.message.bad{color:#ff576e}.message.good{color:#b8ffdb}.overlay{position:absolute;inset:0;display:grid;place-items:center;background:#090e1bbd;backdrop-filter:blur(3px);padding:14px;text-align:center}.overlay.hide{display:none}.modal{width:min(94%,380px);background:#101a2dea;border:1px solid #4b5f7c;border-radius:20px;padding:20px 18px;box-shadow:0 15px 45px #0008}.modal h1{margin:0;font-weight:1000;font-style:italic;font-size:clamp(27px,7vw,42px)}.modal p{line-height:1.5;color:#c5d2e5;font-size:13px;margin:12px 0}.go{background:#ffb339;color:#181006;border:0;border-radius:7px;padding:13px 16px;font-weight:1000;width:100%;font-size:15px;letter-spacing:.055em}.menu{display:none;position:absolute;right:max(9px,env(safe-area-inset-right));top:calc(env(safe-area-inset-top) + 49px);width:min(340px,92%);max-height:60vh;overflow:auto;z-index:7;background:#151e32;border:1px solid #475a78;border-radius:14px;padding:8px;box-shadow:0 20px 40px #0009}.menu.show{display:block}.menu button{display:block;background:#24334b;width:100%;border:0;border-radius:8px;text-align:left;padding:11px;margin:4px 0;font-size:12px;font-weight:800}.menu button:disabled{opacity:.35}
 .top{gap:8px}.brand{white-space:nowrap;font-size:clamp(18px,5.7vw,25px)}
 .build-version{color:#a6acbb;font-size:8px}.stage{margin-left:auto;background:transparent;border:0;color:#b7bdcb;text-align:center;padding:3px;font-size:clamp(10px,3.1vw,14px)}
@@ -43,10 +43,12 @@ button:focus-visible{outline:2px solid white;outline-offset:-4px}
  .modal{padding:10px 12px}.modal p{margin:6px 0}.go{padding:9px 12px}
 }
 .upgrade-offer{display:block;margin:7px 0 0;padding:6px 8px;border:1px solid #785623;border-radius:7px;background:#302516;color:#f5e8d1}.upgrade-offer strong{color:#ffbf55}.upgrade-offer small{display:block;color:#e7d5b7}.modal p{margin:8px 0}.modal .go{padding-block:10px}
+.start-tree{position:absolute;left:10px;top:26%;display:grid;justify-items:center;gap:3px;padding:5px 7px 7px;border:1px solid #647184;border-radius:8px;background:#11141de8;box-shadow:0 3px 12px #0007;pointer-events:none}.start-tree[hidden]{display:none}.start-tree small{font-size:7px;font-weight:900;letter-spacing:.08em;color:#dae1ee}.start-tree i{display:block;width:12px;height:12px;border-radius:50%;background:#30313a;border:1px solid #6a6a70}.start-tree[data-step="0"] .red{background:#ff4c48;box-shadow:0 0 9px #ff4c48}.start-tree[data-step="1"] .one,.start-tree[data-step="2"] .one,.start-tree[data-step="2"] .two,.start-tree[data-step="3"] .amber{background:#ffba28;box-shadow:0 0 8px #ffae23}.start-tree[data-step="4"] .green{background:#4cff83;box-shadow:0 0 11px #4cff83}
+@media(orientation:landscape) and (max-height:570px){.start-tree{top:30%;gap:2px;padding:3px 5px}.start-tree i{width:8px;height:8px}}
 </style></head><body>
 <div id="app">
   <div class="top">
-    <div class="brand">RIVAL <em>RUN</em><small class="build-version" id="buildVersion" aria-label="Game build and horsepower">v8.0.1 · 292 HP</small></div>
+    <div class="brand">RIVAL <em>RUN</em><small class="build-version" id="buildVersion" aria-label="Game build and horsepower">v8.1 · 292 HP</small></div>
     <button id="stage" class="stage">Stage 1/6 ▾</button>
     <button id="sound" class="sound" aria-label="Race sound" aria-pressed="true">🔊</button>
   </div>
@@ -61,6 +63,9 @@ button:focus-visible{outline:2px solid white;outline-offset:-4px}
       </div>
     </div>
     <div class="rival-gap" id="rivalGap" hidden></div>
+    <div class="start-tree" id="tree" aria-label="Race start signal" data-step="0" hidden>
+      <small>STAGE</small><i class="red"></i><i class="amber one"></i><i class="amber two"></i><i class="amber three"></i><i class="green"></i>
+    </div>
     <div class="message" id="message"></div>
     <div class="overlay" id="overlay"><div class="modal" id="modal"></div></div>
   </div>
@@ -90,12 +95,12 @@ const BUILDS=[
 const CAMPAIGN_SAVE='rr-sleeper-build';
 const $=id=>document.getElementById(id),c=$('scene'),ctx=c.getContext('2d');
 let stage=0,unlocked=0;try{unlocked=Math.min(STAGES.length-1,Math.max(0,parseInt(localStorage.getItem(CAMPAIGN_SAVE),10)||0))}catch{}let phase='menu',speed=0,cpuSpeed=0,cpuThrottle=0,pos=0,cpuPos=0,time=0,streak=0,mistakes=0,sceneScroll=0,clock=performance.now(),countAt=0,particles=[],wheelSpin=0,cpuWheelSpin=0,noticeUntil=0,notice='',noticeKind='',shake=0;
-const FINISH=400, COUNTDOWN_SECONDS=1.5, MAX_METRES_PER_SECOND=70;
+const FINISH=400, COUNTDOWN_SECONDS=1.8, MAX_METRES_PER_SECOND=70;
 const GAIN=.12, DRAG=.6, SPIN=.86, RIVAL_RESPONSE=1.5;
-const RIVAL_TARGETS=[.42,.50,.56,.61,.655,.695];
+const RIVAL_TARGETS=[.44,.53,.60,.67,.735,.795];
 function playerMaxSpeed(){return MAX_METRES_PER_SECOND*Math.cbrt(BUILDS[stage].hp/BUILDS[0].hp);}
 const player={v:0,last:0,cleanTaps:0,peakV:0};
-let rivalSurgePhase=0,coast=null;
+let rivalSurgePhase=0,coast=null,cameraLead=0,greenUntil=0;
 const GEAR_LIMITS=[35,75,115,155,195,310];function showText(t,kind='',duration=.75){notice=t;noticeKind=kind;noticeUntil=performance.now()+duration*1000;$('message').textContent=t;$('message').className='message '+kind}
 function showModal(title,body,button,fn){$('overlay').classList.remove('hide');$('modal').innerHTML=`<h1>${title}</h1><p>${body}</p><button class="go" id="go">${button}</button>`;$('go').onclick=fn}
 function update(){
@@ -107,7 +112,6 @@ function update(){
   $('kph').textContent=Math.round(kmh);
   $('gear').textContent=kmh<1?'N':gear+1;
   $('clock').textContent=time.toFixed(2);
-  updateEngine(gear,rev);
   $('revs').style.clipPath=`inset(0 ${(1-rev)*100}% 0 0)`;
   $('progress').style.left=Math.min(100,pos/FINISH*100)+'%';
   $('progressCpu').style.left=Math.min(100,cpuPos/FINISH*100)+'%';
@@ -123,9 +127,23 @@ function updateRivalGap(w,h){
     gap.textContent=delta>0?`Rival ${Math.round(delta)} m ▶`:`◀ Rival ${Math.round(-delta)} m`;
   }
 }
-function load(n,retry=false){stage=n;phase='menu';speed=cpuSpeed=cpuThrottle=pos=cpuPos=time=sceneScroll=wheelSpin=cpuWheelSpin=0;streak=mistakes=0;player.v=player.last=player.cleanTaps=player.peakV=0;rivalSurgePhase=Math.random()*2*Math.PI;particles=[];pulseUntil=0;coast=null;updatePads();$('buildVersion').textContent=`v8.0.1 · ${BUILDS[n].hp} HP`;$('stage').textContent=`Stage ${n+1}/${STAGES.length} · ${STAGES[n][0]} ▾`;$('menu').classList.remove('show');$('message').textContent='';update();if(retry){countdown();return;}showModal(`STAGE ${n+1}`,`Mk7 Golf R · <b>${BUILDS[n].hp} HP</b><br>vs. ${STAGES[n][1]}<p>Alternate A and D to race ${FINISH} meters.<br>Repeat a key or pause, and you slow down.</p>`,'START RACE',countdown)}
-function countdown(){phase='countdown';enableAudio();countAt=performance.now();$('overlay').classList.remove('hide');$('modal').innerHTML='<h1 id="count">2</h1><p>GET READY</p>'}
-function start(){phase='race';$('overlay').classList.add('hide');player.last=0;updatePads();showText('GO!','good',.55)}
+function load(n,retry=false){stage=n;phase='menu';speed=cpuSpeed=cpuThrottle=pos=cpuPos=time=sceneScroll=wheelSpin=cpuWheelSpin=0;streak=mistakes=0;player.v=player.last=player.cleanTaps=player.peakV=0;rivalSurgePhase=Math.random()*2*Math.PI;particles=[];pulseUntil=0;coast=null;cameraLead=greenUntil=0;$('tree').hidden=true;updatePads();$('buildVersion').textContent=`v8.1 · ${BUILDS[n].hp} HP`;$('stage').textContent=`Stage ${n+1}/${STAGES.length} · ${STAGES[n][0]} ▾`;$('menu').classList.remove('show');$('message').textContent='';update();if(retry){countdown();return;}showModal(`STAGE ${n+1}`,`Mk7 Golf R · <b>${BUILDS[n].hp} HP</b><br>vs. ${STAGES[n][1]}<p>Alternate A and D to race ${FINISH} meters.<br>Repeat a key or pause, and you slow down.</p>`,'START RACE',countdown)}
+function countdown(){
+  phase='countdown';
+  countAt=performance.now();
+  $('overlay').classList.add('hide');
+  const tree=$('tree');
+  tree.dataset.step='0';tree.hidden=false;
+  enableAudio();
+}
+function start(){
+  phase='race';
+  player.last=0;
+  $('tree').dataset.step='4';
+  greenUntil=performance.now()+520;
+  updatePads();
+  showText('GO!','good',.55);
+}
 let pulseUntil=0,audioContext,engine, soundOn=true;
 try{soundOn=localStorage.getItem('rr-sound')!=='off';}catch{}
 function updateSound(){
@@ -138,29 +156,46 @@ function enableAudio(){
   try{
     audioContext??=new Audio();
     if(!engine){
-      const oscillator=audioContext.createOscillator();
+      const firing=audioContext.createOscillator();
+      const intake=audioContext.createOscillator();
+      const intakeGain=audioContext.createGain();
       const filter=audioContext.createBiquadFilter();
       const volume=audioContext.createGain();
-      oscillator.type='sawtooth';
-      oscillator.frequency.value=55;
+      firing.setPeriodicWave(audioContext.createPeriodicWave(
+        new Float32Array(7),new Float32Array([0,1,.47,.32,.14,.09,.04])));
+      firing.frequency.value=30;
+      intake.type='sine';
+      intake.frequency.value=340;
+      intakeGain.gain.value=0;
       filter.type='lowpass';
-      filter.frequency.value=500;
+      filter.frequency.value=270;
       volume.gain.value=0;
-      oscillator.connect(filter).connect(volume).connect(audioContext.destination);
-      oscillator.start();
-      engine={oscillator,filter,volume};
+      firing.connect(filter);filter.connect(volume);
+      intake.connect(intakeGain);intakeGain.connect(volume);
+      volume.connect(audioContext.destination);
+      firing.start();intake.start();
+      engine={firing,intake,intakeGain,filter,volume};
     }
     if(audioContext.state==='suspended')audioContext.resume().then(()=>updateEngine()).catch(()=>{});
     else updateEngine();
   }catch{}
 }
-function updateEngine(gear=0,rev=0){
+function updateEngine(){
   if(!engine||audioContext.state!=='running')return;
   const now=audioContext.currentTime;
   const audible=soundOn&&!document.hidden&&(phase==='race'||phase==='countdown'||phase==='coast');
-  engine.oscillator.frequency.setTargetAtTime(55+rev*110+gear*12,now,.03);
-  engine.filter.frequency.setTargetAtTime(500+player.v*1500,now,.05);
-  engine.volume.gain.setTargetAtTime(audible?.045:0,now,.06);
+  const kmh=speed*1.609344;
+  const band=GEAR_LIMITS.findIndex(limit=>kmh<limit);
+  const gear=band<0?GEAR_LIMITS.length-1:band;
+  const low=gear?GEAR_LIMITS[gear-1]:0;
+  const fraction=Math.min(1,(kmh-low)/(GEAR_LIMITS[gear]-low));
+  const rpm=Math.min(6900,900+kmh*25);
+  const boost=Math.max(0,player.v-.24);
+  engine.firing.frequency.setTargetAtTime(rpm/30,now,.12);
+  engine.filter.frequency.setTargetAtTime(260+player.v*920+fraction*130,now,.16);
+  engine.intake.frequency.setTargetAtTime(340+boost*770,now,.2);
+  engine.intakeGain.gain.setTargetAtTime(boost*(.014+stage*.002),now,.18);
+  engine.volume.gain.setTargetAtTime(audible?.038+player.v*.022:0,now,.09);
 }
 function wheelspinSound(){
   if(!soundOn||audioContext?.state!=='running')return;
@@ -248,7 +283,7 @@ function resize(){let b=c.getBoundingClientRect(),dpr=Math.min(2,window.devicePi
 function sky(w,h){if(stage===0||stage===2){landscape(w,h,stage===2);return;}let s=STAGES[stage],g=ctx.createLinearGradient(0,0,0,h);g.addColorStop(0,s[2]);g.addColorStop(.75,stage===2?'#f8ab8b':'#314c69');g.addColorStop(1,'#1e293b');ctx.fillStyle=g;ctx.fillRect(0,0,w,h);let speedPx=sceneScroll*.28;ctx.save();ctx.translate(-(speedPx%(w*.24)),0);if(stage===3||stage===5){for(let i=-1;i<7;i++){let x=i*w*.24;let hh=h*(.22+((i*17+13)%10)*.017);ctx.fillStyle=stage===5?'#222044':'#18243a';ctx.fillRect(x,h*.53-hh,w*.20,hh);for(let j=0;j<8;j++){ctx.fillStyle=stage===3?'#de75ff':'#e3ba8d';ctx.globalAlpha=.7;ctx.fillRect(x+12+j*14,h*.53-hh+12,4,6);ctx.globalAlpha=1}}}else if(stage===1||stage===4){for(let i=-2;i<8;i++){ctx.fillStyle=stage===4?'#3b7890':'#426b70';ctx.beginPath();ctx.moveTo(i*w*.22,h*.47);ctx.lineTo((i+.5)*w*.22,h*.17+(i%3)*h*.04);ctx.lineTo((i+1)*w*.22,h*.47);ctx.fill()}}ctx.restore();if(stage===5){for(let x=0;x<w;x+=w*.20){ctx.fillStyle=x%(w*.4)<1?'#f349fb':'#30d5ff';ctx.fillRect(x,h*.46,5,h*.08)}}}
 const ROAD_TOP=.565, LANE_DIVIDER=.75, ROAD_BOTTOM=.95, START_LINE=.68;
 const TRACK_WIDTHS_PER_METRE=.019;
-function trackX(metres,w){return w*START_LINE+metres*w*TRACK_WIDTHS_PER_METRE-sceneScroll;}
+function trackX(metres,w){return w*(START_LINE-cameraLead)+metres*w*TRACK_WIDTHS_PER_METRE-sceneScroll;}
 function landscape(w,h,desert){
   const skyColor=ctx.createLinearGradient(0,0,0,h*ROAD_TOP);
   skyColor.addColorStop(0,desert?'#f49642':'#57aff0');
@@ -467,7 +502,7 @@ function carPose(side,w,h,offset=0){
   const laneTop=player?LANE_DIVIDER:ROAD_TOP;
   const floor=player?.933:.724;
   const scale=Math.min(w*(player?.52:.44)/(nose-rear),h*.90*(floor-laneTop-.012)/(tireBottom-roof));
-  const x=w*START_LINE-nose*scale+offset;
+  const x=w*(START_LINE-cameraLead)-nose*scale+offset;
   const y=h*floor-tireBottom*scale;
   return {x,y,scale,nose:x+nose*scale,exhaustX:x+rear*scale,exhaustY:y+exhaustY*scale};
 }
@@ -557,15 +592,16 @@ function car(side,w,h,offset){
 }
 function effects(w,h,dt){for(let i=particles.length-1;i>=0;i--){let p=particles[i];p.age+=dt;p.x+=p.vx*dt;p.y+=p.vy*dt;if(p.age>p.life){particles.splice(i,1);continue}let a=1-p.age/p.life;ctx.globalAlpha=a*(p.type==='fire'?.9:.38);ctx.fillStyle=p.type==='fire'?(p.age/p.life>.5?'#f43f5e':'#ffb454'):'#d7e0ef';ctx.beginPath();ctx.ellipse(p.x*w,p.y*h,p.size*(1+p.age),p.size*.7*(1+p.age),0,0,Math.PI*2);ctx.fill()}ctx.globalAlpha=1}
 function speedLines(w,h){
-  if(player.v<.42)return;
-  const length=w*(.04+player.v*.085);
+  const intensity=Math.max(0,Math.min(1,(speed-27)/76));
+  if(!intensity)return;
+  const length=w*(.035+intensity*.17);
   ctx.save();
-  ctx.globalAlpha=Math.min(.29,(player.v-.42)*.78);
+  ctx.globalAlpha=.08+intensity*.27;
   ctx.strokeStyle='#ecf6ff';
   ctx.lineWidth=Math.max(1,h*.002);
-  for(let i=0;i<9;i++){
-    const x=((i*w*.263-sceneScroll*1.26)%w+w)%w;
-    const y=h*(.51+(i%5)*.092);
+  for(let i=0;i<16;i++){
+    const x=((i*w*.263-sceneScroll*(1.17+(i%4)*.10))%w+w)%w;
+    const y=h*(.41+(i%8)*.073);
     ctx.beginPath();
     ctx.moveTo(x,y);
     ctx.lineTo(x-length,y);
@@ -576,6 +612,8 @@ function speedLines(w,h){
 function draw(dt){
   resize();
   const w=c.width,h=c.height;
+  const desiredLead=Math.max(0,Math.min(.085,(speed-28)*.00115));
+  cameraLead+=(desiredLead-cameraLead)*Math.min(1,dt*5);
   sceneScroll=(pos+(coast?.playerDistance??0))*w*TRACK_WIDTHS_PER_METRE;
   ctx.clearRect(0,0,w,h);
   sky(w,h);ground(w,h);
@@ -601,8 +639,9 @@ function frame(now){
   if(phase==='countdown'){
     const remaining=COUNTDOWN_SECONDS-(now-countAt)/1000;
     if(remaining<=0)start();
-    else $('count').textContent=Math.ceil(remaining);
+    else $('tree').dataset.step=String(Math.min(3,Math.floor((now-countAt)/450)));
   }
+  if(greenUntil&&now>=greenUntil){$('tree').hidden=true;greenUntil=0;}
   if(phase==='race'){
     time+=dt;
     player.v=Math.max(0,player.v-DRAG*player.v*dt);
@@ -622,7 +661,7 @@ function frame(now){
     shake=Math.max(0,shake-dt*40);
     if(Math.random()<Math.min(.75,speed/190)*dt*13)smoke('player',1);
     if(Math.random()<Math.min(.70,cpuSpeed/190)*dt*8)smoke('cpu',1);
-    if(Math.random()<dt*4&&speed>85)fire('player');
+    if(stage>=2&&speed>75&&Math.random()<dt*(.8+stage*.36))fire('player');
     if(Math.random()<dt*3&&cpuSpeed>85)fire('cpu');
     if(pos>=FINISH||cpuPos>=FINISH){
       const playerCross=pos>=FINISH?(FINISH-previousPos)/(pos-previousPos):Infinity;
@@ -649,6 +688,7 @@ function frame(now){
     update();
   }
   if($('message').textContent&&now>noticeUntil)$('message').textContent='';
+  updateEngine();
   draw(dt);
   requestAnimationFrame(frame);
 }
