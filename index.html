@@ -1,4 +1,4 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no"><meta name="theme-color" content="#090e1b"><meta name="apple-mobile-web-app-capable" content="yes"><title>RIVAL RUN 8.9</title><style>
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no"><meta name="theme-color" content="#090e1b"><meta name="apple-mobile-web-app-capable" content="yes"><title>RIVAL RUN 9.0</title><style>
 *{box-sizing:border-box}html,body{height:100%;margin:0;overscroll-behavior:none;background:#101115;color:white;font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}button{font:inherit;color:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent}#app{width:100%;height:100vh;height:100dvh;display:flex;flex-direction:column;padding:calc(env(safe-area-inset-top) + 8px) max(9px,env(safe-area-inset-right)) calc(env(safe-area-inset-bottom) + 8px) max(9px,env(safe-area-inset-left));gap:7px}.top{display:flex;align-items:center;justify-content:space-between;min-height:40px;gap:8px;padding-bottom:3px}.brand{font-size:23px;font-weight:1000;font-style:italic;letter-spacing:-1px}.brand em{color:#ffb126;font-style:normal}.build-version{display:block;font-size:10px;font-style:normal;font-weight:850;letter-spacing:.65px;color:#70d6ff;margin-top:1px}.stage{border:1px solid #475770;background:#182237;padding:8px 10px;min-height:36px;border-radius:6px;font-weight:900;font-size:11px;letter-spacing:.035em;text-align:right}.arena{position:relative;flex:1;min-height:0;overflow:hidden;border-radius:15px;background:#172038}canvas{display:block;width:100%;height:100%}.message.bad{color:#ff576e}.message.good{color:#b8ffdb}.overlay{position:absolute;inset:0;display:grid;place-items:center;background:#090e1bbd;backdrop-filter:blur(3px);padding:14px;text-align:center}.overlay.hide{display:none}.modal{width:min(94%,380px);background:#101a2dea;border:1px solid #4b5f7c;border-radius:20px;padding:20px 18px;box-shadow:0 15px 45px #0008}.modal h1{margin:0;font-weight:1000;font-style:italic;font-size:clamp(27px,7vw,42px)}.modal p{line-height:1.5;color:#c5d2e5;font-size:13px;margin:12px 0}.go{background:linear-gradient(115deg,#ffce72,#ffac26 72%);color:#181006;border:1px solid #f6bf61;border-bottom:3px solid #a86712;border-radius:6px;padding:13px 16px;font-weight:1000;width:100%;font-size:15px;letter-spacing:.055em}.menu{display:none;position:absolute;right:max(9px,env(safe-area-inset-right));top:calc(env(safe-area-inset-top) + 49px);width:min(340px,92%);max-height:60vh;overflow:auto;z-index:7;background:#151e32;border:1px solid #475a78;border-radius:14px;padding:8px;box-shadow:0 20px 40px #0009}.menu.show{display:block}.menu button{display:block;background:#24334b;width:100%;border:0;border-radius:8px;text-align:left;padding:11px;margin:4px 0;font-size:12px;font-weight:800}.menu button:disabled{opacity:.35}
 .top{gap:8px}.brand{white-space:nowrap;font-size:clamp(18px,5.7vw,25px)}
 .build-version{color:#a6acbb;font-size:8px}.stage{margin-left:auto;background:transparent;border:0;color:#b7bdcb;text-align:center;padding:3px;font-size:clamp(10px,3.1vw,14px)}
@@ -83,7 +83,7 @@ button:focus-visible{outline:2px solid white;outline-offset:-4px}
 </style></head><body>
 <div id="app">
   <div class="top">
-    <div class="brand">RIVAL <em>RUN</em><small class="build-version">v8.9</small></div>
+    <div class="brand">RIVAL <em>RUN</em><small class="build-version">v9.0</small></div>
     <button id="stage" class="stage">Stage 1/6 ▾</button>
     <button id="sound" class="sound" aria-label="Race sound" aria-pressed="true">🔊</button>
   </div>
@@ -119,24 +119,12 @@ const STAGES=[
  ['PORT ROAD','Ferrari F8 Tributo'],
  ['ORLANDO DRAGWAY','Lamborghini Huracán EVO']
 ];
-const BUILDS=[
- {power:292},
- {power:370},
- {power:387},
- {power:422},
- {power:560,speedScale:1.20},
- {power:584,speedScale:1.23}
-];
 const CAMPAIGN_SAVE='rr-sleeper-build';
 const $=id=>document.getElementById(id),c=$('scene'),ctx=c.getContext('2d');
 let stage=0,unlocked=0;try{unlocked=Math.min(STAGES.length-1,Math.max(0,parseInt(localStorage.getItem(CAMPAIGN_SAVE),10)||0))}catch{}let phase='menu',speed=0,cpuSpeed=0,cpuThrottle=0,pos=0,cpuPos=0,time=0,streak=0,mistakes=0,sceneScroll=0,clock=performance.now(),countAt=0,particles=[],wheelSpin=0,cpuWheelSpin=0,noticeUntil=0,notice='',noticeKind='';
 const FINISH=400, COUNTDOWN_SECONDS=1.8, MAX_METRES_PER_SECOND=70;
-const GAIN=.12, DRAG=.6, SPIN=.86, RIVAL_RESPONSE=1.5;
-const RIVAL_TARGETS=[.44,.53,.60,.67,.75,.82];
-function playerMaxSpeed(){
-  const build=BUILDS[stage];
-  return MAX_METRES_PER_SECOND*(build.speedScale??Math.cbrt(build.power/BUILDS[0].power));
-}
+const GAIN=.14, DRAG=.6, SPIN=.86, RIVAL_RESPONSE=1.5;
+const RIVAL_TARGETS=[.44,.53,.60,.67,.73,.87];
 const player={v:0,last:0,cleanTaps:0,peakV:0};
 let rivalSurgePhase=0,coast=null,cameraLead=0,greenUntil=0;
 const GEAR_LIMITS=[35,75,115,155,195,310];
@@ -152,7 +140,7 @@ const ENGINE_TUNES=[
 function showText(t,kind='',duration=.75){notice=t;noticeKind=kind;noticeUntil=performance.now()+duration*1000;$('message').textContent=t;$('message').className='message '+kind}
 function showModal(title,body,button,fn){$('overlay').classList.remove('hide');$('modal').innerHTML=`<h1>${title}</h1><p>${body}</p><button class="go" id="go">${button}</button>`;$('go').onclick=fn}
 function update(){
-  const kmh=player.v*playerMaxSpeed()*3.6;
+  const kmh=player.v*MAX_METRES_PER_SECOND*3.6;
   const gear=driveGear;
   const lower=gear===0?0:GEAR_LIMITS[gear-1];
   const rev=Math.max(0,Math.min(1,(kmh-lower)/(GEAR_LIMITS[gear]-lower)));
@@ -324,7 +312,7 @@ function tap(key){
     player.peakV=Math.max(player.peakV,player.v);
     if(streak>8&&streak%8===0)showText('GREAT RHYTHM','good',.32);
   }
-  speed=player.v*playerMaxSpeed()/.44704;
+  speed=player.v*MAX_METRES_PER_SECOND/.44704;
   updatePads();
 }
 function smoke(which,n){const origin=exhaust(which);if(origin.x<-.6||origin.x>1.15)return;for(let i=0;i<n;i++)particles.push({...origin,vx:-.09-Math.random()*.18,vy:-.04-Math.random()*.12,age:0,life:.3+Math.random()*.5,size:5+Math.random()*12,type:'smoke'})}
@@ -346,19 +334,19 @@ function finish(won,elapsed,margin){
   const result=won?'Won by '+gap:'Rival ahead by '+gap;
   const totalTaps=player.cleanTaps+mistakes;
   const clean=totalTaps?Math.round(player.cleanTaps/totalTaps*100)+'%':'—';
-  const peakKmh=Math.round(player.peakV*playerMaxSpeed()*3.6);
+  const peakKmh=Math.round(player.peakV*MAX_METRES_PER_SECOND*3.6);
   const nextStage=stage+1;
-  const upgrade=won?BUILDS[nextStage]:null;
-  const heading=won?(upgrade?'YOU WIN! 🏁':'SLEEPER CHAMPION 🏁'):'RIVAL WINS';
+  const hasNextStage=won&&nextStage<STAGES.length;
+  const heading=won?(hasNextStage?'YOU WIN! 🏁':'SLEEPER CHAMPION 🏁'):'RIVAL WINS';
   showModal(heading,
     `${elapsed.toFixed(2)} s · ${result}<br>Top speed: ${peakKmh} km/h · Clean taps: ${clean}<br>${mistakes} wheelspin${mistakes===1?'':'s'} · ${best?(record?'New best: ':'Best win: ')+best.toFixed(2)+' s':'Best win: —'}`,
-    upgrade?'INSTALL & RACE':'RACE AGAIN',
-    upgrade?()=>{
+    hasNextStage?'NEXT RACE':'RACE AGAIN',
+    hasNextStage?()=>{
       unlocked=Math.max(unlocked,nextStage);
       try{localStorage.setItem(CAMPAIGN_SAVE,String(unlocked));}catch{}
       load(nextStage,true);
     }:()=>load(stage,true));
-  if(upgrade){
+  if(hasNextStage){
     const retry=document.createElement('button');
     retry.className='go next';retry.textContent='RACE AGAIN';
     retry.onclick=()=>load(stage,true);
@@ -898,7 +886,7 @@ function frame(now){
   if(phase==='race'){
     time+=dt;
     player.v=Math.max(0,player.v-DRAG*player.v*dt);
-    speed=player.v*playerMaxSpeed()/.44704;
+    speed=player.v*MAX_METRES_PER_SECOND/.44704;
     updateTransmission(now);
     const rivalDt=Math.min(dt,Math.max(0,time-.2));
     if(rivalDt>0){
@@ -909,7 +897,7 @@ function frame(now){
     }
     cpuSpeed=cpuThrottle*MAX_METRES_PER_SECOND/.44704;
     const previousPos=pos,previousCpuPos=cpuPos;
-    pos+=player.v*playerMaxSpeed()*dt;
+    pos+=player.v*MAX_METRES_PER_SECOND*dt;
     cpuPos+=cpuThrottle*MAX_METRES_PER_SECOND*rivalDt;
     wheelSpin+=speed*dt*.10;
     cpuWheelSpin+=cpuSpeed*dt*.10;
@@ -932,10 +920,10 @@ function frame(now){
     const decay=Math.exp(-2.65*dt);
     player.v*=decay;
     cpuThrottle*=decay;
-    speed=player.v*playerMaxSpeed()/.44704;
+    speed=player.v*MAX_METRES_PER_SECOND/.44704;
     updateTransmission(now);
     cpuSpeed=cpuThrottle*MAX_METRES_PER_SECOND/.44704;
-    coast.playerDistance+=player.v*playerMaxSpeed()*dt;
+    coast.playerDistance+=player.v*MAX_METRES_PER_SECOND*dt;
     coast.rivalDistance+=cpuThrottle*MAX_METRES_PER_SECOND*dt;
     wheelSpin+=speed*dt*.10;
     cpuWheelSpin+=cpuSpeed*dt*.10;
