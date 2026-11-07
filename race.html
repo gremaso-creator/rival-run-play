@@ -112,7 +112,7 @@ button:focus-visible{outline:2px solid white;outline-offset:-4px}
   </div>
   <div class="controls"><span class="hint">Alternate A / D or ← / →</span><div class="control-actions"><button id="fullscreen" aria-pressed="false" hidden>⛶ FULLSCREEN</button><button id="home">MENU</button><button id="reset">↻ RESTART</button></div></div>
   <div class="menu" id="menu"></div>
-</div><script src="race-audio.js?v=9.7"></script><script>
+</div><script src="race-audio.js?v=9.8"></script><script>
 const STAGES=[
  ['INDUSTRIAL PARK','Honda Civic Type R'],
  ['PACIFIC COAST HIGHWAY','Subaru WRX STI'],
@@ -207,11 +207,17 @@ function enableAudio(cue){
     if(typeof RaceAudio==='function')soundtrack??=new RaceAudio(audioContext);
     if(!engine){
       const firing=audioContext.createOscillator();
+      const sub=audioContext.createOscillator();
+      const subGain=audioContext.createGain();
+      const exhaust=audioContext.createOscillator();
+      const exhaustGain=audioContext.createGain();
       const intake=audioContext.createOscillator();
       const intakeGain=audioContext.createGain();
       const filter=audioContext.createBiquadFilter();
       const volume=audioContext.createGain();
       firing.frequency.value=30;
+      sub.type='triangle';sub.frequency.value=15;subGain.gain.value=0;
+      exhaust.type='sawtooth';exhaust.frequency.value=40;exhaustGain.gain.value=0;
       intake.type='sine';
       intake.frequency.value=340;
       intakeGain.gain.value=0;
@@ -219,13 +225,15 @@ function enableAudio(cue){
       filter.frequency.value=270;
       volume.gain.value=0;
       firing.connect(filter);filter.connect(volume);
+      sub.connect(subGain);subGain.connect(volume);
+      exhaust.connect(exhaustGain);exhaustGain.connect(filter);
       intake.connect(intakeGain);intakeGain.connect(volume);
       volume.connect(audioContext.destination);
-      firing.start();intake.start();
+      firing.start();sub.start();exhaust.start();intake.start();
       const burst=audioContext.createBuffer(1,Math.ceil(audioContext.sampleRate*.14),audioContext.sampleRate);
       const samples=burst.getChannelData(0);
       for(let i=0;i<samples.length;i++)samples[i]=(Math.random()*2-1)*Math.exp(-6*i/samples.length);
-      engine={firing,intake,intakeGain,filter,volume,burst,stage:-1};
+      engine={firing,sub,subGain,exhaust,exhaustGain,intake,intakeGain,filter,volume,burst,stage:-1};
     }
     if(audioContext.state!=='running')audioContext.resume().then(onRunning).catch(()=>{});
     else onRunning();
@@ -241,7 +249,7 @@ function updateEngine(){
   const gear=driveGear;
   const tune=ENGINE_TUNES[stage];
   if(engine.stage!==stage){
-    const harmonics=new Float32Array([0,...tune.harmonics]);
+    const harmonics=new Float32Array([0,...tune.harmonics.map((v,i)=>i===0?v:i===1?v*1.6:v*1.28)]);
     engine.firing.setPeriodicWave(audioContext.createPeriodicWave(new Float32Array(harmonics.length),harmonics));
     engine.stage=stage;
   }
@@ -250,36 +258,41 @@ function updateEngine(){
   const shiftDip=Math.max(0,shiftUntil-clock)/105;
   const rpm=Math.min(6900,900+kmh*25)*(1-shiftDip*.14);
   const boost=Math.max(0,player.v-.24);
-  engine.firing.frequency.setTargetAtTime(rpm/30,now,.12);
-  engine.filter.frequency.setTargetAtTime(tune.filter+player.v*920+fraction*130,now,.16);
+  engine.firing.frequency.setTargetAtTime(rpm/30,now,.075);
+  engine.sub.frequency.setTargetAtTime(rpm/60,now,.08);
+  engine.subGain.gain.setTargetAtTime(audible?.32+player.v*.14:0,now,.09);
+  engine.exhaust.frequency.setTargetAtTime(rpm/30*1.003,now,.085);
+  engine.exhaustGain.gain.setTargetAtTime(audible?.10+player.v*.035:0,now,.09);
+  engine.filter.frequency.setTargetAtTime(185+player.v*640+fraction*100,now,.12);
   engine.intake.frequency.setTargetAtTime(340+boost*770,now,.2);
   engine.intakeGain.gain.setTargetAtTime(boost*tune.boost,now,.18);
-  engine.volume.gain.setTargetAtTime(audible?.038+player.v*.022:0,now,.09);
+  engine.volume.gain.setTargetAtTime(audible?.095+player.v*.037:0,now,.09);
 }
 function shiftSound(){
   if(!soundOn||document.hidden||!engine||audioContext.state!=='running')return;
+  // Tuned Golf R DSG: short low exhaust burbles instead of a single hiss.
   const now=audioContext.currentTime, tune=ENGINE_TUNES[stage];
-  const noise=audioContext.createBufferSource();
-  const filter=audioContext.createBiquadFilter(), level=audioContext.createGain();
-  noise.buffer=engine.burst;
-  filter.type='bandpass';
-  filter.frequency.setValueAtTime(360+stage*28,now);
-  filter.frequency.exponentialRampToValueAtTime(145,now+.12);
-  filter.Q.value=.8;
-  level.gain.setValueAtTime(tune.pop,now);
-  level.gain.exponentialRampToValueAtTime(.001,now+.135);
-  noise.connect(filter);filter.connect(level);level.connect(audioContext.destination);
-  noise.start(now);
-
-  const thump=audioContext.createOscillator(), body=audioContext.createGain();
-  thump.type='triangle';
-  thump.frequency.setValueAtTime(96-stage*3,now);
-  thump.frequency.exponentialRampToValueAtTime(44,now+.095);
-  body.gain.setValueAtTime(tune.pop*.82,now);
-  body.gain.exponentialRampToValueAtTime(.001,now+.10);
-  thump.connect(body);body.connect(audioContext.destination);
-  thump.start(now);thump.stop(now+.105);
+  for(const [delay,mul] of [[0,1],[.064,.72],[.128,.48]]){
+    const t=now+delay;
+    const noise=audioContext.createBufferSource();
+    const filter=audioContext.createBiquadFilter(),level=audioContext.createGain();
+    noise.buffer=engine.burst;filter.type='lowpass';
+    filter.frequency.setValueAtTime(720+stage*45,t);
+    filter.frequency.exponentialRampToValueAtTime(210,t+.075);
+    level.gain.setValueAtTime(tune.pop*1.42*mul,t);
+    level.gain.exponentialRampToValueAtTime(.0001,t+.085);
+    noise.connect(filter);filter.connect(level);level.connect(audioContext.destination);
+    noise.start(t);noise.stop(t+.092);
+    const thump=audioContext.createOscillator(),body=audioContext.createGain();
+    thump.type='triangle';thump.frequency.setValueAtTime(110-stage*3,t);
+    thump.frequency.exponentialRampToValueAtTime(48,t+.083);
+    body.gain.setValueAtTime(tune.pop*1.15*mul,t);
+    body.gain.exponentialRampToValueAtTime(.0001,t+.086);
+    thump.connect(body);body.connect(audioContext.destination);
+    thump.start(t);thump.stop(t+.092);
+  }
 }
+
 function updateTransmission(now){
   const kmh=speed*1.609344;
   if(driveGear<GEAR_LIMITS.length-1&&kmh>=GEAR_LIMITS[driveGear]){
@@ -774,7 +787,11 @@ function carPose(side,w,h,offset=0){
   const visibleWidth=w*(START_LINE-MAX_CAMERA_LEAD-.035);
   // Roofs can rise above the painted lane edge. Keep a gap between the cars.
   const visibleHeight=h*(playerFloor-rivalFloor-.025);
-  const scale=Math.min(visibleWidth/(nose-rear),visibleHeight/(tireBottom-roof));
+  // Desktop: balance the apparent body sizes, accounting for transparent art margins.
+  // Preserve each sprite's aspect ratio and keep mobile sizing unchanged.
+  const desktop=w/h>1.55;
+  const baseline=Math.min(visibleWidth/(nose-rear),visibleHeight/(tireBottom-roof));
+  const scale=baseline*(desktop?(player?1.13:.94):1);
   const x=w*(START_LINE-cameraLead)-nose*scale+offset;
   const y=h*floor-tireBottom*scale;
   return {x,y,scale,nose:x+nose*scale,exhaustX:x+rear*scale,exhaustY:y+exhaustY*scale};
