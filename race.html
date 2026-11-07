@@ -85,7 +85,7 @@ button:focus-visible{outline:2px solid white;outline-offset:-4px}
 </style></head><body>
 <div id="app">
   <div class="top">
-    <div class="brand">RIVAL <em>RUN</em><small class="build-version">v9.4</small></div>
+    <div class="brand">RIVAL <em>RUN</em><small class="build-version">v9.5</small></div>
     <button id="stage" class="stage">Stage 1/6 ▾</button>
     <button id="sound" class="sound" aria-label="Race sound" aria-pressed="true">🔊</button>
   </div>
@@ -112,7 +112,7 @@ button:focus-visible{outline:2px solid white;outline-offset:-4px}
   </div>
   <div class="controls"><span class="hint">Alternate A / D or ← / →</span><div class="control-actions"><button id="fullscreen" aria-pressed="false" hidden>⛶ FULLSCREEN</button><button id="home">MENU</button><button id="reset">↻ RESTART</button></div></div>
   <div class="menu" id="menu"></div>
-</div><script src="race-audio.js"></script><script>
+</div><script src="race-audio.js?v=9.5"></script><script>
 const STAGES=[
  ['INDUSTRIAL PARK','Honda Civic Type R'],
  ['PACIFIC COAST HIGHWAY','Subaru WRX STI'],
@@ -125,7 +125,7 @@ const CAMPAIGN_SAVE='rr-sleeper-build';
 const $=id=>document.getElementById(id),c=$('scene'),ctx=c.getContext('2d');
 let stage=0,unlocked=0;try{unlocked=Math.min(STAGES.length-1,Math.max(0,parseInt(localStorage.getItem(CAMPAIGN_SAVE),10)||0))}catch{}let phase='menu',speed=0,cpuSpeed=0,cpuThrottle=0,pos=0,cpuPos=0,time=0,streak=0,mistakes=0,sceneScroll=0,clock=performance.now(),countAt=0,particles=[],wheelSpin=0,cpuWheelSpin=0,noticeUntil=0,notice='',noticeKind='';
 const FINISH=400, COUNTDOWN_SECONDS=1.8, MAX_METRES_PER_SECOND=70;
-const MAX_MISCLICKS=6;
+const MAX_MISCLICKS=20, CRITICAL_MISCLICKS=16;
 const GAIN=.14, DRAG=.6, SPIN=.86, RIVAL_RESPONSE=1.5;
 const RIVAL_TARGETS=[.44,.53,.60,.67,.73,.775];
 const player={v:0,last:0,cleanTaps:0,peakV:0};
@@ -295,10 +295,11 @@ function updateTransmission(now){
 function updateDamage(){
   const damage=$('damage');
   damage.textContent=`DAMAGE ${mistakes}/${MAX_MISCLICKS}`;
-  damage.dataset.critical=String(mistakes>=MAX_MISCLICKS-2);
+  damage.dataset.critical=String(mistakes>=CRITICAL_MISCLICKS);
 }
 function engineFailure(){
   phase='end';
+  playCue('engine-break');
   player.v=speed=cpuSpeed=0;
   driveGear=0;
   $('tree').hidden=true;
@@ -329,7 +330,7 @@ function tap(key){
       engineFailure();
       return;
     }
-    showText(mistakes>=MAX_MISCLICKS-2?'ENGINE CRITICAL':'ENGINE DAMAGE','bad',.55);
+    showText(mistakes>=CRITICAL_MISCLICKS?'ENGINE CRITICAL':'ENGINE DAMAGE','bad',.55);
     smoke('player',8);
   }else{
     player.v+=GAIN*(1-player.v);
