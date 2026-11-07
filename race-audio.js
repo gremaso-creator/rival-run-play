@@ -57,10 +57,19 @@ class RaceAudio {
     source.start(time);source.stop(time+duration);
   }
 
+  arcadePam(time,pitch,level=1){
+    const out=this.context.destination;
+    const lowpass=this.context.createBiquadFilter();
+    lowpass.type='lowpass';lowpass.frequency.value=950;lowpass.Q.value=.5;
+    lowpass.connect(out);
+    this.tone(lowpass,time,pitch,'triangle',.15*level,.17,pitch*.59,.012);
+    this.tone(lowpass,time+.012,pitch*.5,'sine',.11*level,.19,pitch*.38,.012);
+    this.tone(lowpass,time+.028,pitch*1.5,'sine',.019*level,.095,pitch*1.2,.009);
+  }
   cue(name){
-    const now=this.context.currentTime+.01, out=this.context.destination;
-    if(name==='ready')this.tone(out,now,440,'triangle',.13,.19);
-    if(name==='set')this.tone(out,now,660,'triangle',.15,.22);
+    const now=this.context.currentTime+.01,out=this.context.destination;
+    if(name==='ready')this.arcadePam(now,260,.91);
+    if(name==='set')this.arcadePam(now,288,.99);
     if(name==='engine-break'){
       this.tone(out,now,152,'triangle',.22,.30,39,.002);
       this.tone(out,now,745,'square',.073,.075,240,.002);
@@ -68,8 +77,8 @@ class RaceAudio {
       this.drumNoise(out,now+.105,1050,.075,.10);
     }
     if(name==='go'){
-      this.tone(out,now,880,'triangle',.17,.27);
-      this.tone(out,now+.06,1320,'sine',.10,.30);
+      this.arcadePam(now,330,1.15);
+      this.tone(out,now+.095,440,'sine',.04,.21,390,.025);
     }
   }
 
