@@ -61,6 +61,12 @@ class RaceAudio {
     const now=this.context.currentTime+.01, out=this.context.destination;
     if(name==='ready')this.tone(out,now,440,'triangle',.13,.19);
     if(name==='set')this.tone(out,now,660,'triangle',.15,.22);
+    if(name==='engine-break'){
+      this.tone(out,now,152,'triangle',.22,.30,39,.002);
+      this.tone(out,now,745,'square',.073,.075,240,.002);
+      this.drumNoise(out,now,520,.19,.17);
+      this.drumNoise(out,now+.105,1050,.075,.10);
+    }
     if(name==='go'){
       this.tone(out,now,880,'triangle',.17,.27);
       this.tone(out,now+.06,1320,'sine',.10,.30);
