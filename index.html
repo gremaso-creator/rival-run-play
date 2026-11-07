@@ -1,4 +1,4 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no"><meta name="theme-color" content="#090e1b"><meta name="apple-mobile-web-app-capable" content="yes"><title>RIVAL RUN 8.7</title><style>
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no"><meta name="theme-color" content="#090e1b"><meta name="apple-mobile-web-app-capable" content="yes"><title>RIVAL RUN 8.8</title><style>
 *{box-sizing:border-box}html,body{height:100%;margin:0;overscroll-behavior:none;background:#101115;color:white;font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}button{font:inherit;color:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent}#app{width:100%;height:100vh;height:100dvh;display:flex;flex-direction:column;padding:calc(env(safe-area-inset-top) + 8px) max(9px,env(safe-area-inset-right)) calc(env(safe-area-inset-bottom) + 8px) max(9px,env(safe-area-inset-left));gap:7px}.top{display:flex;align-items:center;justify-content:space-between;min-height:40px;gap:8px;padding-bottom:3px}.brand{font-size:23px;font-weight:1000;font-style:italic;letter-spacing:-1px}.brand em{color:#ffb126;font-style:normal}.build-version{display:block;font-size:10px;font-style:normal;font-weight:850;letter-spacing:.65px;color:#70d6ff;margin-top:1px}.stage{border:1px solid #475770;background:#182237;padding:8px 10px;min-height:36px;border-radius:6px;font-weight:900;font-size:11px;letter-spacing:.035em;text-align:right}.arena{position:relative;flex:1;min-height:0;overflow:hidden;border-radius:15px;background:#172038}canvas{display:block;width:100%;height:100%}.message.bad{color:#ff576e}.message.good{color:#b8ffdb}.overlay{position:absolute;inset:0;display:grid;place-items:center;background:#090e1bbd;backdrop-filter:blur(3px);padding:14px;text-align:center}.overlay.hide{display:none}.modal{width:min(94%,380px);background:#101a2dea;border:1px solid #4b5f7c;border-radius:20px;padding:20px 18px;box-shadow:0 15px 45px #0008}.modal h1{margin:0;font-weight:1000;font-style:italic;font-size:clamp(27px,7vw,42px)}.modal p{line-height:1.5;color:#c5d2e5;font-size:13px;margin:12px 0}.go{background:linear-gradient(115deg,#ffce72,#ffac26 72%);color:#181006;border:1px solid #f6bf61;border-bottom:3px solid #a86712;border-radius:6px;padding:13px 16px;font-weight:1000;width:100%;font-size:15px;letter-spacing:.055em}.menu{display:none;position:absolute;right:max(9px,env(safe-area-inset-right));top:calc(env(safe-area-inset-top) + 49px);width:min(340px,92%);max-height:60vh;overflow:auto;z-index:7;background:#151e32;border:1px solid #475a78;border-radius:14px;padding:8px;box-shadow:0 20px 40px #0009}.menu.show{display:block}.menu button{display:block;background:#24334b;width:100%;border:0;border-radius:8px;text-align:left;padding:11px;margin:4px 0;font-size:12px;font-weight:800}.menu button:disabled{opacity:.35}
 .top{gap:8px}.brand{white-space:nowrap;font-size:clamp(18px,5.7vw,25px)}
 .build-version{color:#a6acbb;font-size:8px}.stage{margin-left:auto;background:transparent;border:0;color:#b7bdcb;text-align:center;padding:3px;font-size:clamp(10px,3.1vw,14px)}
@@ -70,10 +70,12 @@ button:focus-visible{outline:2px solid white;outline-offset:-4px}
  .track-hud{top:7px}.progress{margin-bottom:5px}.revs{margin-top:3px}
  .modal{padding:10px 12px}.modal p{margin:6px 0}.go{padding:9px 12px}
 }
-.upgrade-offer{display:block;margin:7px 0 0;padding:6px 8px;border:1px solid #785623;border-radius:7px;background:#302516;color:#f5e8d1}.upgrade-offer strong{color:#ffbf55}.upgrade-offer small{display:block;color:#e7d5b7}.modal p{margin:8px 0}.modal .go{padding-block:10px}
+.upgrade-offer{display:block;margin:7px 0 0;padding:6px 8px;border:1px solid #785623;border-radius:7px;background:#302516;color:#f5e8d1}.upgrade-offer strong{color:#ffbf55}.modal p{margin:8px 0}.modal .go{padding-block:10px}
 .start-tree{position:absolute;left:10px;top:26%;display:grid;justify-items:center;gap:3px;padding:5px 7px 7px;border:1px solid #647184;border-radius:8px;background:#11141de8;box-shadow:0 3px 12px #0007;pointer-events:none}.start-tree[hidden]{display:none}.start-tree small{font-size:7px;font-weight:900;letter-spacing:.08em;color:#dae1ee}.start-tree i{display:block;width:12px;height:12px;border-radius:50%;background:#30313a;border:1px solid #6a6a70}.start-tree[data-step="0"] .red{background:#ff4c48;box-shadow:0 0 9px #ff4c48}.start-tree[data-step="1"] .one,.start-tree[data-step="2"] .one,.start-tree[data-step="2"] .two,.start-tree[data-step="3"] .amber{background:#ffba28;box-shadow:0 0 8px #ffae23}.start-tree[data-step="4"] .green{background:#4cff83;box-shadow:0 0 11px #4cff83}
 @media(orientation:landscape) and (max-height:570px){.start-tree{top:30%;gap:2px;padding:3px 5px}.start-tree i{width:8px;height:8px}}
 .modal{max-height:100%;overflow:auto}
+#app.keyboard-layout{display:flex}
+.keyboard-layout .keys{display:none}
 @media(hover:hover) and (pointer:fine){
  #app{display:flex}
  .keys{display:none}
@@ -81,7 +83,7 @@ button:focus-visible{outline:2px solid white;outline-offset:-4px}
 </style></head><body>
 <div id="app">
   <div class="top">
-    <div class="brand">RIVAL <em>RUN</em><small class="build-version" id="buildVersion" aria-label="Game build and horsepower">v8.7 · 292 HP</small></div>
+    <div class="brand">RIVAL <em>RUN</em><small class="build-version" id="buildVersion" aria-label="Game build and horsepower">v8.8 · 292 HP</small></div>
     <button id="stage" class="stage">Stage 1/6 ▾</button>
     <button id="sound" class="sound" aria-label="Race sound" aria-pressed="true">🔊</button>
   </div>
@@ -118,12 +120,12 @@ const STAGES=[
  ['ORLANDO DRAGWAY','Lamborghini Huracán EVO']
 ];
 const BUILDS=[
- {power:292,name:'Stock Mk7 Golf R'},
- {power:370,name:'93-octane ECU tune',effect:'Stronger acceleration from the same tap rhythm.'},
- {power:387,name:'Stage 2 hardware + tune',effect:'More pull once the Golf gets moving.'},
- {power:422,name:'DTR6054 turbo + 93-octane tune',effect:'A stronger charge through the middle of the strip.'},
- {power:560,wheel:true,speedScale:1.20,name:'Forged Motor + Vortex XL',effect:'Forged pistons and rods, intercooler, upgraded fuel pump and port injection, EQT ECU and DSG calibration.'},
- {power:584,wheel:true,speedScale:1.23,name:'Built Head + Final E85 Tune',effect:'Built cylinder head and a final EQT ethanol calibration for the Huracán showdown.'}
+ {power:292},
+ {power:370},
+ {power:387},
+ {power:422},
+ {power:560,wheel:true,speedScale:1.20},
+ {power:584,wheel:true,speedScale:1.23}
 ];
 const CAMPAIGN_SAVE='rr-sleeper-build';
 const $=id=>document.getElementById(id),c=$('scene'),ctx=c.getContext('2d');
@@ -173,7 +175,7 @@ function updateRivalGap(w,h){
     gap.textContent=delta>0?`Rival ${Math.round(delta)} m ▶`:`◀ Rival ${Math.round(-delta)} m`;
   }
 }
-function load(n,retry=false){stage=n;phase='menu';speed=cpuSpeed=cpuThrottle=pos=cpuPos=time=sceneScroll=wheelSpin=cpuWheelSpin=0;streak=mistakes=0;player.v=player.last=player.cleanTaps=player.peakV=0;rivalSurgePhase=Math.random()*2*Math.PI;particles=[];coast=null;cameraLead=greenUntil=driveGear=shiftUntil=0;$('tree').hidden=true;updatePads();$('buildVersion').textContent=`v8.7 · ${powerLabel(BUILDS[n])}`;$('stage').textContent=`Stage ${n+1}/${STAGES.length} · ${STAGES[n][0]} ▾`;$('menu').classList.remove('show');$('message').textContent='';update();if(retry){countdown();return;}showModal(`STAGE ${n+1}`,`Mk7 Golf R · <b>${powerLabel(BUILDS[n])}</b><br>vs. ${STAGES[n][1]}<p>Alternate A and D to race ${FINISH} meters.<br>Repeat a key or pause, and you slow down.</p>`,'START RACE',countdown)}
+function load(n,retry=false){stage=n;phase='menu';speed=cpuSpeed=cpuThrottle=pos=cpuPos=time=sceneScroll=wheelSpin=cpuWheelSpin=0;streak=mistakes=0;player.v=player.last=player.cleanTaps=player.peakV=0;rivalSurgePhase=Math.random()*2*Math.PI;particles=[];coast=null;cameraLead=greenUntil=driveGear=shiftUntil=0;$('tree').hidden=true;updatePads();$('buildVersion').textContent=`v8.8 · ${powerLabel(BUILDS[n])}`;$('stage').textContent=`Stage ${n+1}/${STAGES.length} · ${STAGES[n][0]} ▾`;$('menu').classList.remove('show');$('message').textContent='';update();if(retry){countdown();return;}showModal(`STAGE ${n+1}`,`Mk7 Golf R · <b>${powerLabel(BUILDS[n])}</b><br>vs. ${STAGES[n][1]}<p>Alternate A and D to race ${FINISH} meters.<br>Repeat a key or pause, and you slow down.</p>`,'START RACE',countdown)}
 function countdown(){
   phase='countdown';
   countAt=performance.now();
@@ -351,7 +353,7 @@ function finish(won,elapsed,margin){
   const currentBuild=BUILDS[stage];
   const gain=upgrade&&!!upgrade.wheel===!!currentBuild.wheel?` (+${upgrade.power-currentBuild.power})`:'';
   const offer=upgrade
-    ? `<span class="upgrade-offer"><strong>${upgrade.name} · ${powerLabel(upgrade)}${gain}</strong><small>${upgrade.effect}</small></span>`
+    ? `<span class="upgrade-offer"><strong>Next round · ${powerLabel(upgrade)}${gain}</strong></span>`
     : '';
   const heading=won?(upgrade?'YOU WIN! 🏁':'SLEEPER CHAMPION 🏁'):'RIVAL WINS';
   showModal(heading,
@@ -994,6 +996,8 @@ window.addEventListener('keyup',event=>{
   const key=KEYS[event.code];
   if(key)$('key'+key).classList.remove('down');
 });
+// Desktop Safari can expose different pointer media values depending on its input device.
+if(navigator.maxTouchPoints===0)$('app').classList.add('keyboard-layout');
 const fullscreenButton=$('fullscreen'), app=$('app');
 const enterFullscreen=app.requestFullscreen||app.webkitRequestFullscreen;
 const exitFullscreen=document.exitFullscreen||document.webkitExitFullscreen;
