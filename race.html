@@ -83,7 +83,7 @@ button:focus-visible{outline:2px solid white;outline-offset:-4px}
 </style></head><body>
 <div id="app">
   <div class="top">
-    <div class="brand">RIVAL <em>RUN</em><small class="build-version">v9.2</small></div>
+    <div class="brand">RIVAL <em>RUN</em><small class="build-version">v9.3</small></div>
     <button id="stage" class="stage">Stage 1/6 ▾</button>
     <button id="sound" class="sound" aria-label="Race sound" aria-pressed="true">🔊</button>
   </div>
@@ -110,7 +110,7 @@ button:focus-visible{outline:2px solid white;outline-offset:-4px}
   </div>
   <div class="controls"><span class="hint">Alternate A / D or ← / →</span><div class="control-actions"><button id="fullscreen" aria-pressed="false" hidden>⛶ FULLSCREEN</button><button id="home">MENU</button><button id="reset">↻ RESTART</button></div></div>
   <div class="menu" id="menu"></div>
-</div><script>
+</div><script src="race-audio.js"></script><script>
 const STAGES=[
  ['INDUSTRIAL PARK','Honda Civic Type R'],
  ['PACIFIC COAST HIGHWAY','Subaru WRX STI'],
@@ -169,7 +169,9 @@ function countdown(){
   $('overlay').classList.add('hide');
   const tree=$('tree');
   tree.dataset.step='0';tree.hidden=false;
-  enableAudio();
+  showText('READY','',.90);
+  soundtrack?.stop();
+  enableAudio('ready');
 }
 function start(){
   phase='race';
@@ -178,18 +180,28 @@ function start(){
   greenUntil=performance.now()+520;
   updatePads();
   showText('GO!','good',.55);
+  playCue('go');
 }
-let audioContext,engine, soundOn=true;
+let audioContext,engine,soundtrack, soundOn=true;
 try{soundOn=localStorage.getItem('rr-sound')!=='off';}catch{}
 function updateSound(){
   $('sound').textContent=soundOn?'🔊':'🔇';
   $('sound').setAttribute('aria-pressed',String(soundOn));
 }
-function enableAudio(){
+function playCue(name){
+  if(soundOn&&!document.hidden&&audioContext?.state==='running')soundtrack?.cue(name);
+}
+function enableAudio(cue){
+  const countdownStarted=countAt;
+  const onRunning=()=>{
+    updateEngine();
+    if(cue&&phase==='countdown'&&countAt===countdownStarted&&performance.now()-countAt<450)playCue(cue);
+  };
   const Audio=window.AudioContext||window.webkitAudioContext;
   if(!soundOn||!Audio)return;
   try{
     audioContext??=new Audio();
+    if(typeof RaceAudio==='function')soundtrack??=new RaceAudio(audioContext);
     if(!engine){
       const firing=audioContext.createOscillator();
       const intake=audioContext.createOscillator();
@@ -212,14 +224,16 @@ function enableAudio(){
       for(let i=0;i<samples.length;i++)samples[i]=(Math.random()*2-1)*Math.exp(-6*i/samples.length);
       engine={firing,intake,intakeGain,filter,volume,burst,stage:-1};
     }
-    if(audioContext.state==='suspended')audioContext.resume().then(()=>updateEngine()).catch(()=>{});
-    else updateEngine();
+    if(audioContext.state!=='running')audioContext.resume().then(onRunning).catch(()=>{});
+    else onRunning();
   }catch{}
 }
 function updateEngine(){
   if(!engine||audioContext.state!=='running')return;
   const now=audioContext.currentTime;
   const audible=soundOn&&!document.hidden&&(phase==='race'||phase==='countdown'||phase==='coast');
+  if(audible&&phase==='race')soundtrack?.schedule(stage);
+  else soundtrack?.stop();
   const kmh=speed*1.609344;
   const gear=driveGear;
   const tune=ENGINE_TUNES[stage];
@@ -880,7 +894,14 @@ function frame(now){
   if(phase==='countdown'){
     const remaining=COUNTDOWN_SECONDS-(now-countAt)/1000;
     if(remaining<=0)start();
-    else $('tree').dataset.step=String(Math.min(3,Math.floor((now-countAt)/450)));
+    else{
+      const tree=$('tree'), step=Math.min(3,Math.floor((now-countAt)/450));
+      if(step>=2&&Number(tree.dataset.step)<2){
+        showText('SET','',remaining);
+        playCue('set');
+      }
+      tree.dataset.step=String(step);
+    }
   }
   if(greenUntil&&now>=greenUntil){$('tree').hidden=true;greenUntil=0;}
   if(phase==='race'){
