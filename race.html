@@ -85,9 +85,9 @@ button:focus-visible{outline:2px solid white;outline-offset:-4px}
 </style></head><body>
 <div id="app">
   <div class="top">
-    <div class="brand">RIVAL <em>RUN</em><small class="build-version">v9.8</small></div>
+    <div class="brand">RIVAL <em>RUN</em><small class="build-version">v9.9</small></div>
     <button id="stage" class="stage">Stage 1/6 ▾</button>
-    <button id="sound" class="sound" aria-label="Race sound" aria-pressed="true">🔊</button>
+    <button id="sound" class="sound" aria-label="Race sound" aria-pressed="true">🔊</button><button id="music" class="sound" style="width:auto;min-width:60px;padding:0 8px;font-size:11px;font-weight:800" aria-label="Toggle race music to hear the Golf R engine" aria-pressed="true">♫ ON</button>
   </div>
   <div class="arena">
     <canvas id="scene"></canvas>
@@ -112,7 +112,7 @@ button:focus-visible{outline:2px solid white;outline-offset:-4px}
   </div>
   <div class="controls"><span class="hint">Alternate A / D or ← / →</span><div class="control-actions"><button id="fullscreen" aria-pressed="false" hidden>⛶ FULLSCREEN</button><button id="home">MENU</button><button id="reset">↻ RESTART</button></div></div>
   <div class="menu" id="menu"></div>
-</div><script src="race-audio.js?v=9.8"></script><script>
+</div><script src="race-audio.js?v=9.9"></script><script>
 const STAGES=[
  ['INDUSTRIAL PARK','Honda Civic Type R'],
  ['PACIFIC COAST HIGHWAY','Subaru WRX STI'],
@@ -185,11 +185,13 @@ function start(){
   showText('GO!','good',.55);
   playCue('go');
 }
-let audioContext,engine,soundtrack, soundOn=true;
-try{soundOn=localStorage.getItem('rr-sound')!=='off';}catch{}
+let audioContext,engine,soundtrack, soundOn=true, musicOn=true;
+try{soundOn=localStorage.getItem('rr-sound')!=='off';musicOn=localStorage.getItem('rr-music')!=='off';}catch{}
 function updateSound(){
   $('sound').textContent=soundOn?'🔊':'🔇';
   $('sound').setAttribute('aria-pressed',String(soundOn));
+  $('music').textContent=musicOn?'♫ ON':'♫ OFF';
+  $('music').setAttribute('aria-pressed',String(musicOn));
 }
 function playCue(name){
   if(soundOn&&!document.hidden&&audioContext?.state==='running')soundtrack?.cue(name);
@@ -243,7 +245,7 @@ function updateEngine(){
   if(!engine||audioContext.state!=='running')return;
   const now=audioContext.currentTime;
   const audible=soundOn&&!document.hidden&&(phase==='race'||phase==='countdown'||phase==='coast');
-  if(audible&&phase==='race')soundtrack?.schedule(stage);
+  if(audible&&musicOn&&phase==='race')soundtrack?.schedule(stage);
   else soundtrack?.stop();
   const kmh=speed*1.609344;
   const gear=driveGear;
@@ -263,10 +265,10 @@ function updateEngine(){
   engine.subGain.gain.setTargetAtTime(audible?.32+player.v*.14:0,now,.09);
   engine.exhaust.frequency.setTargetAtTime(rpm/30*1.003,now,.085);
   engine.exhaustGain.gain.setTargetAtTime(audible?.10+player.v*.035:0,now,.09);
-  engine.filter.frequency.setTargetAtTime(185+player.v*640+fraction*100,now,.12);
+  engine.filter.frequency.setTargetAtTime(280+player.v*900+fraction*180,now,.12);
   engine.intake.frequency.setTargetAtTime(340+boost*770,now,.2);
   engine.intakeGain.gain.setTargetAtTime(boost*tune.boost,now,.18);
-  engine.volume.gain.setTargetAtTime(audible?.095+player.v*.037:0,now,.09);
+  engine.volume.gain.setTargetAtTime(audible?.20+player.v*.065:0,now,.075);
 }
 function shiftSound(){
   if(!soundOn||document.hidden||!engine||audioContext.state!=='running')return;
@@ -1056,7 +1058,7 @@ if(enterFullscreen&&exitFullscreen&&(document.fullscreenEnabled??document.webkit
   document.addEventListener('fullscreenchange',updateFullscreen);
   document.addEventListener('webkitfullscreenchange',updateFullscreen);
 }
-$('sound').onclick=()=>{soundOn=!soundOn;try{localStorage.setItem('rr-sound',soundOn?'on':'off');}catch{}updateSound();if(soundOn)enableAudio();else updateEngine();};updateSound();document.addEventListener('visibilitychange',()=>updateEngine());$('home').onclick=()=>location.assign('./');$('reset').onclick=()=>load(stage,true);$('stage').onclick=()=>{let menu=$('menu');menu.innerHTML=STAGES.map((s,i)=>`<button data-n="${i}" ${i>unlocked?'disabled':''}>${i>unlocked?'🔒 ':''}STAGE ${i+1} · ${s[1]}</button>`).join('');menu.classList.toggle('show');menu.querySelectorAll('button').forEach(b=>b.onclick=()=>load(+b.dataset.n))};
+$('sound').onclick=()=>{soundOn=!soundOn;try{localStorage.setItem('rr-sound',soundOn?'on':'off');}catch{}updateSound();if(soundOn)enableAudio();else updateEngine();};$('music').onclick=()=>{musicOn=!musicOn;try{localStorage.setItem('rr-music',musicOn?'on':'off');}catch{}updateSound();if(musicOn)enableAudio();else soundtrack?.stop();};updateSound();document.addEventListener('visibilitychange',()=>updateEngine());$('home').onclick=()=>location.assign('./');$('reset').onclick=()=>load(stage,true);$('stage').onclick=()=>{let menu=$('menu');menu.innerHTML=STAGES.map((s,i)=>`<button data-n="${i}" ${i>unlocked?'disabled':''}>${i>unlocked?'🔒 ':''}STAGE ${i+1} · ${s[1]}</button>`).join('');menu.classList.toggle('show');menu.querySelectorAll('button').forEach(b=>b.onclick=()=>load(+b.dataset.n))};
 const requestedStage=new URLSearchParams(location.search).get('stage');
 const startingStage=requestedStage===null?unlocked:Number(requestedStage)-1;
 load(Number.isInteger(startingStage)&&startingStage>=0&&startingStage<=unlocked?startingStage:unlocked);
