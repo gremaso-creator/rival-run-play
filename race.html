@@ -85,7 +85,7 @@ button:focus-visible{outline:2px solid white;outline-offset:-4px}
 </style></head><body>
 <div id="app">
   <div class="top">
-    <div class="brand">RIVAL <em>RUN</em><small class="build-version">v10.2</small></div>
+    <div class="brand">RIVAL <em>RUN</em><small class="build-version">v10.5</small></div>
     <button id="stage" class="stage">Stage 1/6 ▾</button>
     <button id="sound" class="sound" aria-label="Race sound" aria-pressed="true">🔊</button><button id="music" class="sound" style="width:auto;min-width:60px;padding:0 8px;font-size:11px;font-weight:800" aria-label="Toggle race music to hear the Golf R engine" aria-pressed="true">♫ ON</button>
   </div>
@@ -112,7 +112,7 @@ button:focus-visible{outline:2px solid white;outline-offset:-4px}
   </div>
   <div class="controls"><span class="hint">Alternate A / D or ← / →</span><div class="control-actions"><button id="fullscreen" aria-pressed="false" hidden>⛶ FULLSCREEN</button><button id="home">MENU</button><button id="reset">↻ RESTART</button></div></div>
   <div class="menu" id="menu"></div>
-</div><script src="race-audio.js?v=10.2"></script><script src="golf-r-sample.js?v=10.2"></script><script>
+</div><script src="audio-settings.js?v=10.5"></script><script src="race-audio.js?v=10.5"></script><script src="golf-r-sample.js?v=10.2"></script><script>
 const STAGES=[
  ['INDUSTRIAL PARK','Honda Civic Type R'],
  ['PACIFIC COAST HIGHWAY','Subaru WRX STI'],
@@ -185,7 +185,8 @@ function start(){
   showText('GO!','good',.55);
   playCue('go');
 }
-let audioContext,engine,soundtrack, soundOn=true, musicOn=true;
+let audioContext,engine,soundtrack,engineBus,effectsBus,levelBus;
+let pageActive=true;
 let golfRecorded=null, golfSampleLoading=false;
 function loadRecordedGolf(){
   if(golfRecorded||golfSampleLoading||!audioContext||!window.RR_GOLF_SAMPLE_BASE64)return;
@@ -202,7 +203,7 @@ function loadRecordedGolf(){
       src.playbackRate.value=.80;
       filter.type='lowpass';filter.frequency.value=2300;
       gain.gain.value=0;
-      src.connect(filter);filter.connect(gain);gain.connect(audioContext.destination);
+      src.connect(filter);filter.connect(gain);gain.connect(engineBus);
       src.start(0,src.loopStart);
       golfRecorded={buffer,src,gain,filter};
       golfSampleLoading=false;
@@ -210,7 +211,7 @@ function loadRecordedGolf(){
   }catch{golfSampleLoading=false;}
 }
 function recordedDSG(){
-  if(!golfRecorded||audioContext?.state!=='running'||!soundOn)return false;
+  if(!golfRecorded||audioContext?.state!=='running'||!audioSettings.level('engine'))return false;
   const start=1.05;
   const duration=Math.min(.48,golfRecorded.buffer.duration-start);
   if(duration<.05)return false;
@@ -221,7 +222,7 @@ function recordedDSG(){
   gain.gain.linearRampToValueAtTime(.65,now+.012);
   gain.gain.setValueAtTime(.65,now+duration-.04);
   gain.gain.linearRampToValueAtTime(0,now+duration);
-  src.connect(gain);gain.connect(audioContext.destination);
+  src.connect(gain);gain.connect(engineBus);
   golfRecorded.shift?.stop();
   golfRecorded.shift=src;
   src.onended=()=>{
@@ -232,15 +233,18 @@ function recordedDSG(){
   src.start(now,start,duration);
   return true;
 }
-try{soundOn=localStorage.getItem('rr-sound')!=='off';musicOn=localStorage.getItem('rr-music')!=='off';}catch{}
 function updateSound(){
-  $('sound').textContent=soundOn?'🔊':'🔇';
-  $('sound').setAttribute('aria-pressed',String(soundOn));
+  const engineOn=audioSettings.get('engine').enabled;
+  const musicOn=audioSettings.get('level').enabled;
+  $('sound').textContent=engineOn?'🔊':'🔇';
+  $('sound').setAttribute('aria-pressed',String(engineOn));
+  $('sound').setAttribute('aria-label','Engine sound');
   $('music').textContent=musicOn?'♫ ON':'♫ OFF';
   $('music').setAttribute('aria-pressed',String(musicOn));
+  $('music').setAttribute('aria-label','Level music');
 }
 function playCue(name){
-  if(soundOn&&!document.hidden&&audioContext?.state==='running')soundtrack?.cue(name);
+  if(audioSettings.level('effects')&&!document.hidden&&audioContext?.state==='running')soundtrack?.cue(name);
 }
 function enableAudio(cue){
   const countdownStarted=countAt;
@@ -250,10 +254,19 @@ function enableAudio(cue){
     if(cue&&phase==='countdown'&&countAt===countdownStarted&&performance.now()-countAt<450)playCue(cue);
   };
   const Audio=window.AudioContext||window.webkitAudioContext;
-  if(!soundOn||!Audio)return;
+  if(!Audio)return;
   try{
     audioContext??=new Audio();
-    if(typeof RaceAudio==='function')soundtrack??=new RaceAudio(audioContext);
+    if(!engineBus){
+      engineBus=audioContext.createGain();
+      effectsBus=audioContext.createGain();
+      levelBus=audioContext.createGain();
+      for(const bus of [engineBus,effectsBus,levelBus]){
+        bus.gain.value=0;
+        bus.connect(audioContext.destination);
+      }
+    }
+    if(typeof RaceAudio==='function')soundtrack??=new RaceAudio(audioContext,levelBus,effectsBus);
     if(!engine){
       const firing=audioContext.createOscillator();
       const sub=audioContext.createOscillator();
@@ -277,7 +290,7 @@ function enableAudio(cue){
       sub.connect(subGain);subGain.connect(volume);
       exhaust.connect(exhaustGain);exhaustGain.connect(filter);
       intake.connect(intakeGain);intakeGain.connect(volume);
-      volume.connect(audioContext.destination);
+      volume.connect(engineBus);
       firing.start();sub.start();exhaust.start();intake.start();
       const burst=audioContext.createBuffer(1,Math.ceil(audioContext.sampleRate*.14),audioContext.sampleRate);
       const samples=burst.getChannelData(0);
@@ -291,8 +304,14 @@ function enableAudio(cue){
 function updateEngine(){
   if(!engine||audioContext.state!=='running')return;
   const now=audioContext.currentTime;
-  const audible=soundOn&&!document.hidden&&speed>=1&&(phase==='race'||phase==='coast');
-  if(audible&&musicOn&&phase==='race')soundtrack?.schedule(stage);
+  const active=pageActive&&!document.hidden;
+  const engineLevel=active?audioSettings.level('engine'):0;
+  const musicLevel=active?audioSettings.level('level'):0;
+  engineBus.gain.setTargetAtTime(engineLevel,now,.015);
+  levelBus.gain.setTargetAtTime(musicLevel,now,.015);
+  effectsBus.gain.setTargetAtTime(active?audioSettings.level('effects'):0,now,.015);
+  const audible=engineLevel>0&&speed>=1&&(phase==='race'||phase==='coast');
+  if(musicLevel>0&&phase==='race')soundtrack?.schedule(stage);
   else soundtrack?.stop();
   const kmh=speed*1.609344;
   const gear=driveGear;
@@ -326,7 +345,7 @@ function updateEngine(){
   }
 }
 function shiftSound(){
-  if(!soundOn||document.hidden||!engine||audioContext.state!=='running')return;
+  if(!audioSettings.level('engine')||document.hidden||!engine||audioContext.state!=='running')return;
   if(recordedDSG())return;
   // Tuned Golf R DSG: short low exhaust burbles instead of a single hiss.
   const now=audioContext.currentTime, tune=ENGINE_TUNES[stage];
@@ -339,14 +358,14 @@ function shiftSound(){
     filter.frequency.exponentialRampToValueAtTime(210,t+.075);
     level.gain.setValueAtTime(tune.pop*1.42*mul,t);
     level.gain.exponentialRampToValueAtTime(.0001,t+.085);
-    noise.connect(filter);filter.connect(level);level.connect(audioContext.destination);
+    noise.connect(filter);filter.connect(level);level.connect(engineBus);
     noise.start(t);noise.stop(t+.092);
     const thump=audioContext.createOscillator(),body=audioContext.createGain();
     thump.type='triangle';thump.frequency.setValueAtTime(110-stage*3,t);
     thump.frequency.exponentialRampToValueAtTime(48,t+.083);
     body.gain.setValueAtTime(tune.pop*1.15*mul,t);
     body.gain.exponentialRampToValueAtTime(.0001,t+.086);
-    thump.connect(body);body.connect(audioContext.destination);
+    thump.connect(body);body.connect(engineBus);
     thump.start(t);thump.stop(t+.092);
   }
 }
@@ -1116,7 +1135,32 @@ if(enterFullscreen&&exitFullscreen&&(document.fullscreenEnabled??document.webkit
   document.addEventListener('fullscreenchange',updateFullscreen);
   document.addEventListener('webkitfullscreenchange',updateFullscreen);
 }
-$('sound').onclick=()=>{soundOn=!soundOn;try{localStorage.setItem('rr-sound',soundOn?'on':'off');}catch{}updateSound();if(soundOn)enableAudio();else updateEngine();};$('music').onclick=()=>{musicOn=!musicOn;try{localStorage.setItem('rr-music',musicOn?'on':'off');}catch{}updateSound();if(musicOn)enableAudio();else soundtrack?.stop();};updateSound();document.addEventListener('visibilitychange',()=>updateEngine());$('home').onclick=()=>location.assign('./');$('reset').onclick=()=>load(stage,true);$('stage').onclick=()=>{let menu=$('menu');menu.innerHTML=STAGES.map((s,i)=>`<button data-n="${i}" ${i>unlocked?'disabled':''}>${i>unlocked?'🔒 ':''}STAGE ${i+1} · ${s[1]}</button>`).join('');menu.classList.toggle('show');menu.querySelectorAll('button').forEach(b=>b.onclick=()=>load(+b.dataset.n))};
+function toggleRaceAudio(channel){
+  audioSettings.set(channel,{enabled:!audioSettings.get(channel).enabled});
+  updateSound();
+  enableAudio();
+}
+$('sound').onclick=()=>toggleRaceAudio('engine');
+$('music').onclick=()=>toggleRaceAudio('level');
+updateSound();
+document.addEventListener('visibilitychange',updateEngine);
+window.addEventListener('pagehide',()=>{
+  pageActive=false;
+  updateEngine();
+});
+function refreshRaceAudio(){
+  audioSettings.reload();
+  updateSound();
+  updateEngine();
+}
+window.addEventListener('pageshow',()=>{
+  pageActive=true;
+  refreshRaceAudio();
+});
+window.addEventListener('storage',event=>{
+  if(event.key===audioSettings.key)refreshRaceAudio();
+});
+$('home').onclick=()=>location.assign('./');$('reset').onclick=()=>load(stage,true);$('stage').onclick=()=>{let menu=$('menu');menu.innerHTML=STAGES.map((s,i)=>`<button data-n="${i}" ${i>unlocked?'disabled':''}>${i>unlocked?'🔒 ':''}STAGE ${i+1} · ${s[1]}</button>`).join('');menu.classList.toggle('show');menu.querySelectorAll('button').forEach(b=>b.onclick=()=>load(+b.dataset.n))};
 const requestedStage=new URLSearchParams(location.search).get('stage');
 const startingStage=requestedStage===null?unlocked:Number(requestedStage)-1;
 load(Number.isInteger(startingStage)&&startingStage>=0&&startingStage<=unlocked?startingStage:unlocked);

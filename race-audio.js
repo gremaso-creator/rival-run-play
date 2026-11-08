@@ -23,8 +23,10 @@ const RACE_TRACKS=[
 ];
 
 class RaceAudio {
-  constructor(context){
+  constructor(context,musicOutput,effectsOutput){
     this.context=context;
+    this.musicOutput=musicOutput;
+    this.effectsOutput=effectsOutput;
     this.noise=context.createBuffer(1,Math.ceil(context.sampleRate*.18),context.sampleRate);
     const samples=this.noise.getChannelData(0);
     for(let i=0;i<samples.length;i++)samples[i]=Math.random()*2-1;
@@ -58,7 +60,7 @@ class RaceAudio {
   }
 
   arcadePam(time,pitch,level=1){
-    const out=this.context.destination;
+    const out=this.effectsOutput;
     const lowpass=this.context.createBiquadFilter();
     lowpass.type='lowpass';lowpass.frequency.value=950;lowpass.Q.value=.5;
     lowpass.connect(out);
@@ -67,7 +69,7 @@ class RaceAudio {
     this.tone(lowpass,time+.028,pitch*1.5,'sine',.019*level,.095,pitch*1.2,.009);
   }
   cue(name){
-    const now=this.context.currentTime+.01,out=this.context.destination;
+    const now=this.context.currentTime+.01,out=this.effectsOutput;
     if(name==='ready')this.arcadePam(now,260,.91);
     if(name==='set')this.arcadePam(now,288,.99);
     if(name==='engine-break'){
@@ -88,7 +90,7 @@ class RaceAudio {
       this.stop();
       const bus=this.context.createGain();
       bus.gain.value=.25;
-      bus.connect(this.context.destination);
+      bus.connect(this.musicOutput);
       this.loop={stage,bus,step:0,time:now+.035};
     }
     const loop=this.loop, track=RACE_TRACKS[stage];
