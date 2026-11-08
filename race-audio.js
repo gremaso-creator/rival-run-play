@@ -87,7 +87,7 @@ class RaceAudio {
     if(this.loop?.stage!==stage){
       this.stop();
       const bus=this.context.createGain();
-      bus.gain.value=.68;
+      bus.gain.value=.25;
       bus.connect(this.context.destination);
       this.loop={stage,bus,step:0,time:now+.035};
     }
